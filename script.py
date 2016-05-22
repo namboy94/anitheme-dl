@@ -57,3 +57,8 @@ for show in all_info:
             print("Downloading " + link)
         
             urllib.request.urlretrieve(link, local_file)
+
+            from subprocess import Popen
+
+            Popen(["ffmpeg", "-i", local_file, "-vn", "-acodec", "copy", local_file + ".ogg"]).wait()
+            Popen(["ffmpeg", "-i", local_file, "-vn", "-acodec", "libmp3lame", "-aq", "4", local_file + ".mp3"]).wait()
