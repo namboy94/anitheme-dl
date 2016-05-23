@@ -55,6 +55,7 @@ class AnimeShow(object):
         """
         self.show_name = show_name
         self.mal_link = mal_link
+        self.songs = []
 
     def add_song(self, song: AnimeSong) -> None:
         """

@@ -20,13 +20,108 @@ This file is part of themes.moe-dl.
     along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+# imports
+import os
+import urllib.request
+from themes_moe_dl.parsers.HtmlParser import HtmlParser
+from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
+from themes_moe_dl.converters.WebmConverter import WebmConverter
 
+
+# noinspection PyUnresolvedReferences
 def main():
     """
     The main method of the program
 
     :return: None
     """
+    arguments = ArgumentParser.parse()
+    if not arguments.userinterface:
+        process(arguments.username, arguments.destination, arguments.format, arguments.keepsource)
+    else:
+        pass  # Start UI
+
+
+def process(user_name: str, destination: str, destination_format: str, keep_source: bool) -> None:
+    """
+    Processes the download request of the user
+
+    :param user_name: the myanimelist.net username of the user
+    :param destination: the destination directory of the downloads
+    :param destination_format: the format that should be saved
+    :param keep_source: can be set to determine if the source files should be kept or not
+    :return: None
+    """
+    root_dir = os.path.join(destination, "themes.moe")
+    validate_directory(root_dir)
+
+    formats = ["webm"]
+
+    if destination_format == "all":
+        formats += WebmConverter.supported_formats
+    elif destination_format not in WebmConverter.supported_formats:
+        print("Format not supported")
+        return
+    else:
+        formats.append(destination_format)
+
+    for file_format in formats:
+        validate_directory(os.path.join(root_dir, file_format))
+    source_directory = os.path.join(root_dir, "webm")
+    formats.pop(0)
+
+    shows = HtmlParser(user_name).parse()
+
+    for show in shows:
+        show_source_directory = os.path.join(source_directory, show.show_name)
+        validate_directory(show_source_directory)
+        destination_directories = {}
+
+        for file_format in formats:
+            file_format_directory = os.path.join(root_dir, file_format, show.show_name)
+            validate_directory(file_format_directory)
+            destination_directories[file_format] = file_format_directory
+
+        for song in show.songs:
+            song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
+
+            if not os.path.isfile(song_file):
+                print("downloading file " + song_file + " from " + song.song_link)
+
+                def report_dl_progress(count, block_size, total_size):
+                    percentage = str(int(count*block_size * (100 / total_size)))
+                    print("\r" + percentage + "%", end="")
+
+                urllib.request.urlretrieve(song.song_link, song_file, reporthook=report_dl_progress)
+                print()
+
+            else:
+                print("skipping existing file " + song_file)
+
+            for destination_format in destination_directories:
+                converted_file = os.path.join(destination_directories[destination_format],
+                                              song.get_file_name(destination_format))
+
+                if not os.path.isfile(converted_file):
+                    print("converting to " + destination_format)
+                    WebmConverter.convert(song_file, converted_file, destination_format)
+                else:
+                    print("skipping existing file " + converted_file)
+
+        if not keep_source and "webm" not in formats:
+            os.remove(source_directory)
+
+
+def validate_directory(directory: str) -> None:
+    """
+    Checks if a directory exists and creates it if that is not the case
+
+    :param directory: The directory to check
+    :return: None
+    """
+    if not os.path.isdir(directory):
+        os.makedirs(directory)
+
 
 if __name__ == '__main__':
     main()
