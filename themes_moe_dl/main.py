@@ -27,6 +27,7 @@ import urllib.request
 from themes_moe_dl.parsers.HtmlParser import HtmlParser
 from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
 from themes_moe_dl.converters.WebmConverter import WebmConverter
+from themes_moe_dl.userinterfaces.InteractiveCli import InteractiveCli
 
 
 # noinspection PyUnresolvedReferences
@@ -39,6 +40,8 @@ def main():
     arguments = ArgumentParser.parse()
     if not arguments.userinterface:
         process(arguments.username, arguments.destination, arguments.format, arguments.keepsource, print)
+    elif arguments.userinterface == "cli":
+        InteractiveCli.run()
     else:
         from themes_moe_dl.userinterfaces.Gui import Gui
         Gui().start()
@@ -87,30 +90,33 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
             destination_directories[file_format] = file_format_directory
 
         for song in show.songs:
-            song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
+            try:  # Pokemon Exception handling
+                song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
 
-            if not os.path.isfile(song_file):
-                progress_callback("downloading file " + song.get_file_name("webm") + " from " + song.song_link)
+                if not os.path.isfile(song_file):
+                    progress_callback("downloading file " + song.get_file_name("webm") + " from " + song.song_link)
 
-                def report_dl_progress(count, block_size, total_size):
-                    percentage = str(int(count*block_size * (100 / total_size)))
-                    progress_callback("\r" + percentage + "%", end="")
+                    def report_dl_progress(count, block_size, total_size):
+                        percentage = str(int(count*block_size * (100 / total_size)))
+                        progress_callback("\r" + percentage + "%", end="")
 
-                urllib.request.urlretrieve(song.song_link, song_file, reporthook=report_dl_progress)
-                progress_callback("")
+                    urllib.request.urlretrieve(song.song_link, song_file, reporthook=report_dl_progress)
+                    progress_callback("")
 
-            else:
-                progress_callback("skipping downloading existing file " + song_file)
-
-            for destination_format in destination_directories:
-                converted_file = os.path.join(destination_directories[destination_format],
-                                              song.get_file_name(destination_format))
-
-                if not os.path.isfile(converted_file):
-                    progress_callback("converting to " + destination_format)
-                    WebmConverter.convert(song_file, converted_file, destination_format)
                 else:
-                    progress_callback("skipping converting existing file " + converted_file)
+                    progress_callback("skipping downloading existing file " + song_file)
+
+                for destination_format in destination_directories:
+                    converted_file = os.path.join(destination_directories[destination_format],
+                                                  song.get_file_name(destination_format))
+
+                    if not os.path.isfile(converted_file):
+                        progress_callback("converting to " + destination_format)
+                        WebmConverter.convert(song_file, converted_file, destination_format)
+                    else:
+                        progress_callback("skipping converting existing file " + converted_file)
+            except Exception as e:
+                print(str(e))
 
         if not keep_source and "webm" not in formats:
             shutil.rmtree(source_directory)

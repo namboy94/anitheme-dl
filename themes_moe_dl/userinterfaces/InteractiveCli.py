@@ -65,9 +65,9 @@ class InteractiveCli(object):
         """
 
         if default_answer:
-            answer = input(question + " (" + default_answer)
+            answer = input(question + " (" + default_answer + ")\n")
         else:
-            answer = input(question)
+            answer = input(question + "\n")
         answer = default_answer if answer == "" and default_answer != "" else answer
         return answer
 
@@ -81,7 +81,7 @@ class InteractiveCli(object):
         """
 
         while True:
-            answer = input(question + " (y/n)")
+            answer = input(question + " (y/n)\n")
             if answer == "y":
                 return True
             elif answer == "n":
