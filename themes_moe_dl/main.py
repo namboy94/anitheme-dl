@@ -22,6 +22,7 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
+import sys
 import urllib.request
 from themes_moe_dl.parsers.HtmlParser import HtmlParser
 from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
@@ -37,6 +38,9 @@ def main():
     """
     arguments = ArgumentParser.parse()
     if not arguments.userinterface:
+        if arguments.username is None:
+            print("A username is required. Use the -u parameter to specify your myanimelist.net username")
+            sys.exit(1)
         process(arguments.username, arguments.destination, arguments.format, arguments.keepsource)
     else:
         pass  # Start UI

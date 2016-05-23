@@ -35,7 +35,7 @@ class ArgumentParser(object):
 
         parser = argparse.ArgumentParser(description="Download Anime Openings and Endings")
 
-        parser.add_argument("-u", "--username", type=str, default="", help="The username to be used")
+        parser.add_argument("-u", "--username", type=str, help="The username to be used")
         parser.add_argument("-f", "--format", type=str, default="webm", help="Specifies a destination"
                                                                              "format for the downloaded files")
         parser.add_argument("-d", "--destination", type=str, default=os.getcwd(), help="Specifies the target download"
