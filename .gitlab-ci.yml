@@ -1,0 +1,63 @@
+stages:
+  - setup
+  - test
+  - upload
+  - upgrade
+  - cleanup
+
+clone_master:
+  stage: setup
+  only:
+    - master
+  script:
+    - cd
+    - git clone git@gitlab.namibsun.net:namboy94/themes.moe-dl.git
+    - git clone git@gitlab.namibsun.net:namboy94/themes.moe-dl.wiki.git
+    - cd themes.moe-dl
+    - git push -u git@gitlab.com:namboy94/themes.moe-dl.git --all
+    - git push -u git@github.com:namboy94/themes.moe-dl.git --all
+    - git push -u git@bitbucket.org:namboy94/themes.moe-dl.git --all
+
+generate_statistics:
+  stage: test
+  only:
+    - master
+  script:
+    - cd
+    - cd themes.moe-dl
+    - git_stats generate
+    - cd
+    - cd themes.moe-dl.wiki
+    - cp -r ../themes.moe-dl/git_stats .
+
+upload_to_pypi:
+  stage: upload
+  only:
+    - master
+  script:
+    - cd
+    - cd themes.moe-dl
+    - python setup.py register sdist upload
+  allow_failure: true
+
+upload_documentation_and_statistics:
+  stage: upload
+  only:
+    - master
+  script:
+    - cd
+    - cd themes.moe-dl.wiki
+    - git add --all
+    - git commit -m "Updated statistics"
+    - git push -u origin master
+
+delete_clone_master:
+  stage: cleanup
+  when: always
+  only:
+    - master
+  script:
+    - cd
+    - rm -rf themes.moe-dl
+    - rm -rf themes.moe-dl.wiki
+
