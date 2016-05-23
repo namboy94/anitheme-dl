@@ -22,6 +22,7 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
+import shutil
 import urllib.request
 from themes_moe_dl.parsers.HtmlParser import HtmlParser
 from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
@@ -112,7 +113,7 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
                     progress_callback("skipping converting existing file " + converted_file)
 
         if not keep_source and "webm" not in formats:
-            os.remove(source_directory)
+            shutil.rmtree(source_directory)
 
 
 def validate_directory(directory: str) -> None:
