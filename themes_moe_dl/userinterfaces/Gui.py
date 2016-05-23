@@ -22,11 +22,12 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
+import sys
 from themes_moe_dl.converters.WebmConverter import WebmConverter
 from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
 
 
-gui_framework = GridTemplateGenerator.get_grid_templates()["tk"]
+gui_framework = GridTemplateGenerator.get_grid_templates()[sys.argv[1]]
 
 
 # noinspection PyAbstractClass

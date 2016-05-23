@@ -56,6 +56,7 @@ class ArgumentParser(object):
             except KeyError:
                 print("This user interface does not exist or is not available on your platform")
                 sys.exit(1)
+            sys.argv[1] = args.userinterface
         else:
             if args.username is None:
                 print("A username is required. Use the -u parameter to specify your myanimelist.net username")
