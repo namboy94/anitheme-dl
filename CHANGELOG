@@ -1,3 +1,6 @@
+V 0.3
+  - Fixed error when removing the source directory
+  - Implemented GUI
 V 0.2.1
   - Fixed setup
 V 0.2
