@@ -13,10 +13,10 @@ clone_master:
     - cd
     - git clone git@gitlab.namibsun.net:namboy94/themes.moe-dl.git
     - git clone git@gitlab.namibsun.net:namboy94/themes.moe-dl.wiki.git
-    - cd themes.moe-dl
-    - git push -u git@gitlab.com:namboy94/themes.moe-dl.git --all
-    - git push -u git@github.com:namboy94/themes.moe-dl.git --all
-    - git push -u git@bitbucket.org:namboy94/themes.moe-dl.git --all
+    #- cd themes.moe-dl
+    #- git push -u git@gitlab.com:namboy94/themes.moe-dl.git --all
+    #- git push -u git@github.com:namboy94/themes.moe-dl.git --all
+    #- git push -u git@bitbucket.org:namboy94/themes.moe-dl.git --all
 
 generate_statistics:
   stage: test
