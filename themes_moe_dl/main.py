@@ -22,7 +22,6 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
-import sys
 import urllib.request
 from themes_moe_dl.userinterfaces.Gui import Gui
 from themes_moe_dl.parsers.HtmlParser import HtmlParser
@@ -39,16 +38,14 @@ def main():
     """
     arguments = ArgumentParser.parse()
     if not arguments.userinterface:
-        if arguments.username is None:
-            print("A username is required. Use the -u parameter to specify your myanimelist.net username")
-            sys.exit(1)
-        process(arguments.username, arguments.destination, arguments.format, arguments.keepsource)
+        process(arguments.username, arguments.destination, arguments.format, arguments.keepsource, print)
     else:
         if arguments.userinterface == "tk":
             Gui().start()
 
 
-def process(user_name: str, destination: str, destination_format: str, keep_source: bool) -> None:
+def process(user_name: str, destination: str, destination_format: str, keep_source: bool, progress_callback: callable)\
+        -> None:
     """
     Processes the download request of the user
 
@@ -56,6 +53,7 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
     :param destination: the destination directory of the downloads
     :param destination_format: the format that should be saved
     :param keep_source: can be set to determine if the source files should be kept or not
+    :param progress_callback: Callback method to display the progress of the method
     :return: None
     """
     root_dir = os.path.join(destination, "themes.moe")
@@ -66,7 +64,7 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
     if destination_format == "all":
         formats += WebmConverter.supported_formats
     elif destination_format not in WebmConverter.supported_formats:
-        print("Format not supported")
+        progress_callback("Format not supported")
         return
     else:
         formats.append(destination_format)
@@ -92,27 +90,27 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
             song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
 
             if not os.path.isfile(song_file):
-                print("downloading file " + song_file + " from " + song.song_link)
+                progress_callback("downloading file " + song_file + " from " + song.song_link)
 
                 def report_dl_progress(count, block_size, total_size):
                     percentage = str(int(count*block_size * (100 / total_size)))
-                    print("\r" + percentage + "%", end="")
+                    progress_callback("\r" + percentage + "%", end="")
 
                 urllib.request.urlretrieve(song.song_link, song_file, reporthook=report_dl_progress)
-                print()
+                progress_callback("")
 
             else:
-                print("skipping existing file " + song_file)
+                progress_callback("skipping existing file " + song_file)
 
             for destination_format in destination_directories:
                 converted_file = os.path.join(destination_directories[destination_format],
                                               song.get_file_name(destination_format))
 
                 if not os.path.isfile(converted_file):
-                    print("converting to " + destination_format)
+                    progress_callback("converting to " + destination_format)
                     WebmConverter.convert(song_file, converted_file, destination_format)
                 else:
-                    print("skipping existing file " + converted_file)
+                    progress_callback("skipping existing file " + converted_file)
 
         if not keep_source and "webm" not in formats:
             os.remove(source_directory)

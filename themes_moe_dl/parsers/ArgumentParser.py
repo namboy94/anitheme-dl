@@ -22,7 +22,9 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
+import sys
 import argparse
+from gfworks.templates.generators.GridTemplateGenerator import GridTemplateGenerator
 
 
 class ArgumentParser(object):
@@ -46,4 +48,17 @@ class ArgumentParser(object):
         parser.add_argument("-i", "--userinterface", type=str, default="", help="Can be used to specify the user"
                                                                                 "interface.")
 
-        return parser.parse_args()
+        args = parser.parse_args()
+
+        if args.userinterface:
+            try:
+                GridTemplateGenerator.get_grid_templates()[args.userinterface]
+            except KeyError:
+                print("This user interface does not exist or is not available on your platform")
+                sys.exit(1)
+        else:
+            if args.username is None:
+                print("A username is required. Use the -u parameter to specify your myanimelist.net username")
+                sys.exit(1)
+
+        return args
