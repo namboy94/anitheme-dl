@@ -94,7 +94,8 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
                 song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
 
                 if not os.path.isfile(song_file):
-                    progress_callback("downloading file " + song.get_file_name("webm") + " from " + song.song_link)
+                    print("Downloading " + song.song_link)
+                    progress_callback("DL: " + show.show_name + " - " + song.get_file_name("webm"))
 
                     def report_dl_progress(count, block_size, total_size):
                         percentage = str(int(count*block_size * (100 / total_size)))
