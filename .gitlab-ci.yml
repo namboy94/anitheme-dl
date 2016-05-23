@@ -18,6 +18,18 @@ clone_master:
     #- git push -u git@github.com:namboy94/themes.moe-dl.git --all
     #- git push -u git@bitbucket.org:namboy94/themes.moe-dl.git --all
 
+clone_develop:
+  stage: setup
+  only:
+    - develop
+  script:
+    - cd
+    - git clone -b develop git@gitlab.namibsun.net:namboy94/themes.moe-dl.git themes.moe-dl-develop
+    #- cd themes.moe-dl
+    #- git push -u git@gitlab.com:namboy94/themes.moe-dl.git --all
+    #- git push -u git@github.com:namboy94/themes.moe-dl.git --all
+    #- git push -u git@bitbucket.org:namboy94/themes.moe-dl.git --all
+
 generate_statistics:
   stage: test
   only:
@@ -60,4 +72,13 @@ delete_clone_master:
     - cd
     - rm -rf themes.moe-dl
     - rm -rf themes.moe-dl.wiki
+
+delete_clone_develop:
+  stage: cleanup
+  when: always
+  only:
+    - develop
+  script:
+    - cd
+    - rm -rf themes.moe-dl-develop
 
