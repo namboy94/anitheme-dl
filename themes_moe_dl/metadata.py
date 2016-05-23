@@ -111,7 +111,7 @@ pypi_requirements = ["gfworks"]
 List of requirements available on pypi.
 """
 
-other_requirements = ["ffmpeg"]
+other_requirements = ["ffmpeg", 'requests', 'beautifulsoup4']
 """
 List of requirements not available on pypi
 """
