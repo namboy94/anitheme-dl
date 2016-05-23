@@ -112,8 +112,8 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
                 else:
                     progress_callback("skipping converting existing file " + converted_file)
 
-        if not keep_source and "webm" not in formats:
-            shutil.rmtree(source_directory)
+    if not keep_source and "webm" not in formats:
+        shutil.rmtree(source_directory)
 
 
 def validate_directory(directory: str) -> None:
