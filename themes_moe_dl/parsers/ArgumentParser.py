@@ -54,8 +54,9 @@ class ArgumentParser(object):
             try:
                 GridTemplateGenerator.get_grid_templates()[args.userinterface]
             except KeyError:
-                print("This user interface does not exist or is not available on your platform")
-                sys.exit(1)
+                if args.userinterface != "cli":
+                    print("This user interface does not exist or is not available on your platform")
+                    sys.exit(1)
             sys.argv[1] = args.userinterface
         else:
             if args.username is None:
