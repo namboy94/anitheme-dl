@@ -1,3 +1,5 @@
+V 0.4.1
+  - Fixed scripts not working when installed via pip
 V 0.4
   - Added interactive CLI mode
   - implemented better cross-platform capabilities
