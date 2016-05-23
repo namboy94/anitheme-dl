@@ -24,6 +24,7 @@ This file is part of themes.moe-dl.
 import os
 import sys
 import urllib.request
+from themes_moe_dl.userinterfaces.Gui import Gui
 from themes_moe_dl.parsers.HtmlParser import HtmlParser
 from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
 from themes_moe_dl.converters.WebmConverter import WebmConverter
@@ -43,7 +44,8 @@ def main():
             sys.exit(1)
         process(arguments.username, arguments.destination, arguments.format, arguments.keepsource)
     else:
-        pass  # Start UI
+        if arguments.userinterface == "tk":
+            Gui().start()
 
 
 def process(user_name: str, destination: str, destination_format: str, keep_source: bool) -> None:
