@@ -72,7 +72,7 @@ The (default) language of this project
 
 compatible_os = "Operating System :: OS Independent"
 """
-Th eOperating Systems on which the program can run
+The Operating Systems on which the program can run
 """
 
 project_url = "http://gitlab.namibsun.net/namboy94/themes.moe-dl"
