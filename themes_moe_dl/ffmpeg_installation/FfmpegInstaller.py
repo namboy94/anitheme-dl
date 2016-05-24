@@ -36,7 +36,9 @@ class FfmpegInstaller(object):
         """
         paths = os.getenv("PATH")
         is_installed = False
-        for path in paths.split(";"):
+        separator = ";" if os.name == "nt" else ":"
+
+        for path in paths.split(separator):
             if os.path.isfile(os.path.join(path, "ffmpeg")):
                 is_installed = True
                 break
@@ -52,8 +54,7 @@ class FfmpegInstaller(object):
         installed_directory = "C:\\Program Files (x86)\\themes.moe-dl\\"
         frozen_ffmpeg_directory = "C:\\Program Files (x86)\\themes.moe-dl\\ffmpeg\\bin"
         if os.path.isdir(installed_directory):
-            sys.path.append(frozen_ffmpeg_directory)
-            os.system("setx path \"%path%;" + frozen_ffmpeg_directory + "\"")
+            os.environ["PATH"] += ";" + frozen_ffmpeg_directory
         else:
             print("Please install ffmpeg")
             sys.exit(1)
