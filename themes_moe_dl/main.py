@@ -28,6 +28,7 @@ from themes_moe_dl.parsers.HtmlParser import HtmlParser
 from themes_moe_dl.parsers.ArgumentParser import ArgumentParser
 from themes_moe_dl.converters.WebmConverter import WebmConverter
 from themes_moe_dl.userinterfaces.InteractiveCli import InteractiveCli
+from themes_moe_dl.ffmpeg_installation.FfmpegInstaller import FfmpegInstaller
 
 
 # noinspection PyUnresolvedReferences
@@ -37,6 +38,9 @@ def main():
 
     :return: None
     """
+    if not FfmpegInstaller.is_installed():
+        FfmpegInstaller.install()
+
     arguments = ArgumentParser.parse()
     if not arguments.userinterface:
         process(arguments.username, arguments.destination, arguments.format, arguments.keepsource, print)
