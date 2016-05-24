@@ -42,6 +42,7 @@ def main():
         FfmpegInstaller.install()
 
     arguments = ArgumentParser.parse()
+
     if not arguments.userinterface:
         process(arguments.username, arguments.destination, arguments.format, arguments.keepsource, print)
     elif arguments.userinterface == "cli":
