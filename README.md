@@ -12,7 +12,7 @@ as root (GNU/Linux) or as Administrator (Windows)
 
 Alternatively, Windows users can also use an executable installer: [Download](windist/current/themes-moe-dl.exe)
 
-(Older Versions)[windist]
+[Older Versions](windist)
 
 ## Usage
 
