@@ -49,9 +49,14 @@ class FfmpegInstaller(object):
 
         :return: None
         """
-        frozen_ffmpeg = os.path.join(os.path.dirname(os.path.realpath(__file__)), "ffmpeg", "bin")
-        sys.path.append(frozen_ffmpeg)
-        os.system("setx path \"%path%;" + frozen_ffmpeg + "\"")
+        installed_directory = "C:\\Program Files (x86)\\themes.moe-dl\\"
+        frozen_ffmpeg_directory = "C:\\Program Files (x86)\\themes.moe-dl\\ffmpeg\\bin"
+        if os.path.isdir(installed_directory):
+            sys.path.append(frozen_ffmpeg_directory)
+            os.system("setx path \"%path%;" + frozen_ffmpeg_directory + "\"")
+        else:
+            print("Please install ffmpeg")
+            sys.exit(1)
 
     @staticmethod
     def install_on_linux() -> None:
@@ -62,6 +67,7 @@ class FfmpegInstaller(object):
         """
         print("Please install ffmpeg using your package manager")
         print("Example:\n\n sudo pacman -S ffmpeg\nor\nsudo apt-get install ffmpeg")
+        sys.exit(1)
 
     @staticmethod
     def install() -> None:
