@@ -35,7 +35,7 @@ project_description = "A tool that allows downloading anime openings listed on t
 A short description of the project
 """
 
-version_number = "0.3.1"
+version_number = "0.4.1"
 """
 The current version of the program.
 """
@@ -106,17 +106,17 @@ license_identifier = "License :: OSI Approved :: GNU General Public License v3 (
 The license used for this project
 """
 
-pypi_requirements = ["gfworks"]
+pypi_requirements = ["gfworks", 'requests', 'beautifulsoup4', "typing"]
 """
 List of requirements available on pypi.
 """
 
-other_requirements = ["ffmpeg", 'requests', 'beautifulsoup4']
+other_requirements = ["ffmpeg"]
 """
 List of requirements not available on pypi
 """
 
-scripts = ["bin/themes-moe-dl"]
+scripts = ["bin/themes-moe-dl", "bin/themes-moe-dl.py"]
 """
 List of script files to be installed during installation
 """

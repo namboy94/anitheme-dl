@@ -1,3 +1,10 @@
+V 0.4.1
+  - Fixed scripts not working when installed via pip
+V 0.4
+  - Added interactive CLI mode
+  - implemented better cross-platform capabilities
+V 0.3.1
+  - Small update for testing Windows compatibility
 V 0.3
   - Fixed error when removing the source directory
   - Implemented GUI
