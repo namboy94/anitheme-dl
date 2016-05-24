@@ -1,6 +1,7 @@
 V 0.5
   - Added Windows Installer Executables
   - Added more bin files
+  - Fixed issue in windows GUI-only mode
 V 0.4.1
   - Fixed scripts not working when installed via pip
 V 0.4
