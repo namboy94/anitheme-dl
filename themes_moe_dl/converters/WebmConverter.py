@@ -22,7 +22,8 @@ This file is part of themes.moe-dl.
 
 # imports
 import os
-from subprocess import Popen, PIPE
+import subprocess
+from typing import List
 
 
 class WebmConverter(object):
@@ -61,8 +62,7 @@ class WebmConverter(object):
         """
         if not mp3_file.endswith(".mp3"):
             mp3_file += ".mp3"
-        Popen(["ffmpeg", "-i", webm_file, "-vn", "-acodec", "libmp3lame", "-aq", "4", mp3_file], stderr=PIPE,
-              env={"PATH": os.getenv("PATH")}).wait()
+        WebmConverter.call_subprocess(["ffmpeg", "-i", webm_file, "-vn", "-acodec", "libmp3lame", "-aq", "4", mp3_file])
 
     @staticmethod
     def convert_to_ogg(webm_file: str, ogg_file: str) -> None:
@@ -75,8 +75,7 @@ class WebmConverter(object):
         """
         if not ogg_file.endswith(".ogg"):
             ogg_file += ".ogg"
-        Popen(["ffmpeg", "-i", webm_file, "-vn", "-acodec", "copy", ogg_file], stderr=PIPE,
-              env={"PATH": os.getenv("PATH")}).wait()
+        WebmConverter.call_subprocess(["ffmpeg", "-i", webm_file, "-vn", "-acodec", "copy", ogg_file])
 
     @staticmethod
     def convert_to_webm(webm_file: str, destination_file: str) -> None:
@@ -87,3 +86,24 @@ class WebmConverter(object):
         :return: None
         """
         pass
+
+    # noinspection PyTypeChecker
+    @staticmethod
+    def call_subprocess(command: List[str]) -> None:
+        """
+        Calls  subprocess while hiding the stderr output and not opening a new window when running
+        in GUI mode
+
+        :param command: the command to be executed
+        :return: None
+        """
+        startupinfo = None
+        if os.name == "nt":
+            startupinfo = subprocess.STARTUPINFO()
+            # noinspection PyUnresolvedReferences
+            startupinfo.dwFlags |= subprocess.STARTF_USESHOWWINDOW
+
+        subprocess.Popen(command,
+                         stderr=subprocess.PIPE,
+                         env={"PATH": os.getenv("PATH")},
+                         startupinfo=startupinfo).wait()

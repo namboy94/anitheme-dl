@@ -35,7 +35,7 @@ project_description = "A tool that allows downloading anime openings listed on t
 A short description of the project
 """
 
-version_number = "0.4.1"
+version_number = "0.5"
 """
 The current version of the program.
 """
@@ -72,7 +72,7 @@ The (default) language of this project
 
 compatible_os = "Operating System :: OS Independent"
 """
-Th eOperating Systems on which the program can run
+The Operating Systems on which the program can run
 """
 
 project_url = "http://gitlab.namibsun.net/namboy94/themes.moe-dl"
