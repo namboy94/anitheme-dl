@@ -38,15 +38,14 @@ class ArgumentParser(object):
         parser = argparse.ArgumentParser(description="Download Anime Openings and Endings")
 
         parser.add_argument("-u", "--username", type=str, help="The username to be used")
-        parser.add_argument("-f", "--format", type=str, default="webm", help="Specifies a destination"
-                                                                             "format for the downloaded files")
-        parser.add_argument("-d", "--destination", type=str, default=os.getcwd(), help="Specifies the target download"
-                                                                                       "directory for the downloaded"
-                                                                                       "files")
-        parser.add_argument("-k", "--keepsource", action="store_true", help="Keeps the downloaded video source"
-                                                                            "if requested")
-        parser.add_argument("-i", "--userinterface", type=str, default="", help="Can be used to specify the user"
-                                                                                "interface.")
+        parser.add_argument("-f", "--format", type=str, default="webm",
+                            help="Specifies a destination format for the downloaded files")
+        parser.add_argument("-d", "--destination", type=str, default=os.path.expanduser("~"),
+                            help="Specifies the target download directory for the downloaded files")
+        parser.add_argument("-k", "--keepsource", action="store_true",
+                            help="Keeps the downloaded video source if requested")
+        parser.add_argument("-i", "--userinterface", type=str, default="",
+                            help="Can be used to specify the user interface.")
 
         args = parser.parse_args()
 
