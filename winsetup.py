@@ -49,8 +49,8 @@ def readme() -> str:
             return f.read()
 
 
-setup(console=[],
-      windows=[],
+setup(console=["bin/themes-moe-dl-cli"],
+      windows=["bin/themes-moe-dl-tk"],
       zipfile=None,
       name=metadata.project_name,
       version=metadata.version_number,
