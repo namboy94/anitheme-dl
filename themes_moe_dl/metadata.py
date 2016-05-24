@@ -35,7 +35,7 @@ project_description = "A tool that allows downloading anime openings listed on t
 A short description of the project
 """
 
-version_number = "0.5"
+version_number = "0.6"
 """
 The current version of the program.
 """
