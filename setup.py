@@ -24,7 +24,6 @@ This file is part of themes.moe-dl.
 # imports
 import themes_moe_dl.metadata as metadata
 from setuptools import setup, find_packages
-import py2exe
 
 
 def readme() -> str:
