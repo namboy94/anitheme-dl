@@ -86,8 +86,12 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
 
     for show in shows:
         show_source_directory = os.path.join(source_directory, show.show_name)
+        mal_link_file = os.path.join(show_source_directory, "mal-link")
         validate_directory(show_source_directory)
         destination_directories = {}
+
+        with open(mal_link_file, "w") as mal_file:
+            mal_file.write(show.mal_link)
 
         for file_format in formats:
             file_format_directory = os.path.join(root_dir, file_format, show.show_name)
