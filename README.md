@@ -10,9 +10,9 @@ First, make sure you have python and pip installed. Then run
     
 as root (GNU/Linux) or as Administrator (Windows)
 
-Alternatively, Windows users can also use an executable installer: [Download](windist/current/themes-moe-dl.exe)
+Alternatively, Windows users can also use an executable installer:
 
-[Older Versions](windist)
+[Download](http://gitlab.namibsun.net/namboy94/themes.moe-dl/wikis/builds)
 
 ## Usage
 

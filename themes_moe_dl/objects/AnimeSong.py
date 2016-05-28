@@ -44,14 +44,9 @@ class AnimeSong(object):
         :param song_link: The link to the song's file
         :return: None
         """
-        self.song_name = song_name
         self.song_link = song_link
 
-    def get_file_name(self, extension: str) -> str:
-        """
-        Getter method that returns the filename of the song with the provided extension
+        for illegal_character in ":\\/*?\"<>|":
+            song_name = song_name.replace(illegal_character, "")
 
-        :param extension: the extensiomn to be used
-        :return: the file name
-        """
-        return self.song_name + "." + extension
+        self.song_name = song_name
