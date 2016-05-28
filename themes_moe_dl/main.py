@@ -86,8 +86,12 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
 
     for show in shows:
         show_source_directory = os.path.join(source_directory, show.show_name)
+        mal_link_file = os.path.join(show_source_directory, "mal-link")
         validate_directory(show_source_directory)
         destination_directories = {}
+
+        with open(mal_link_file, "w") as mal_file:
+            mal_file.write(show.mal_link)
 
         for file_format in formats:
             file_format_directory = os.path.join(root_dir, file_format, show.show_name)
@@ -96,11 +100,11 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
 
         for song in show.songs:
             try:  # Pokemon Exception handling
-                song_file = os.path.join(show_source_directory, song.get_file_name("webm"))
+                song_file = os.path.join(show_source_directory, song.song_name + ".webm")
 
                 if not os.path.isfile(song_file):
                     print("Downloading " + song.song_link)
-                    progress_callback("DL: " + show.show_name + " - " + song.get_file_name("webm"))
+                    progress_callback("DL: " + show.show_name + " - " + song.song_name + ".webm")
 
                     def report_dl_progress(count, block_size, total_size):
                         percentage = str(int(count*block_size * (100 / total_size)))
@@ -114,7 +118,7 @@ def process(user_name: str, destination: str, destination_format: str, keep_sour
 
                 for destination_format in destination_directories:
                     converted_file = os.path.join(destination_directories[destination_format],
-                                                  song.get_file_name(destination_format))
+                                                  song.song_name + "." + destination_format)
 
                     if not os.path.isfile(converted_file):
                         progress_callback("converting to " + destination_format)

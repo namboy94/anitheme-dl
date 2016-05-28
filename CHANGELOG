@@ -1,3 +1,6 @@
+V 0.6.5
+  - Fixed the program breaking under Windows when encountering illegal file symbols like :
+  - Made the program write a mal-link file
 V 0.6
   - Ffmpeg is now being installed together with the main program on Windows
 V 0.5

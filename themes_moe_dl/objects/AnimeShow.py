@@ -53,6 +53,10 @@ class AnimeShow(object):
         :param mal_link: the myanimelist.net link
         :return: None
         """
+
+        for illegal_character in ":\\/*?\"<>|":
+            show_name = show_name.replace(illegal_character, "")
+
         self.show_name = show_name
         self.mal_link = mal_link
         self.songs = []
