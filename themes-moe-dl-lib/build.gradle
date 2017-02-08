@@ -3,9 +3,12 @@ version rootProject.ext.version
 
 apply plugin: 'java'
 apply plugin: 'kotlin'
+apply plugin: 'org.jetbrains.dokka'
 
 dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.5"
+    compile "org.jsoup:jsoup:1.9.2"
+    compile "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
 }
 
 sourceSets {
@@ -18,4 +21,19 @@ jar {
         attributes 'Main-Class': 'net.namibsun.themes_moe_dl.lib.MainKt'
     }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+dokka {
+    moduleName = 'themes-moe-dl-lib'
+    outputFormat = 'javadoc'
+    outputDirectory = "$buildDir/javadoc"
+    //processConfigurations = ['compile', 'extra']
+    //includes = ['packages.md', 'extra.md']
+    //samples = ['samples/basic.kt', 'samples/advanced.kt']
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://gitlab.namibsun.net/namboy94/themes.moe-dl/blob/master/themes-moe-dl-lib/src/main/kotlin"
+        suffix = ""
+    }
+    sourceDirs = files('src/main/kotlin')
 }
