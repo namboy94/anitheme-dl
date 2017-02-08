@@ -1,0 +1,21 @@
+group 'net.namibsun.themes-moe-dl.lib'
+version rootProject.ext.version
+
+apply plugin: 'java'
+apply plugin: 'kotlin'
+
+dependencies {
+    compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.5"
+}
+
+sourceSets {
+    main.java.srcDirs += 'src/main/kotlin/'
+    test.java.srcDirs += 'src/test/kotlin/'
+}
+
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.namibsun.themes_moe_dl.lib.MainKt'
+    }
+    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
