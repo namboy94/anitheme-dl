@@ -50,6 +50,7 @@ update_site_indexes:
   stage: finalize
   tags:
     - linux-buildserver
+  script:
     - git clone https://gitlab.namibsun.net/namboy94/html-index-generator.git
     - python html-index-generator/html-index-generator.py /var/www/coverage.namibsun.net/public_html
       /var/www/coverage.namibsun.net/public_html/index.html
