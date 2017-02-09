@@ -18,30 +18,14 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import org.junit.Test
-
 /**
- * Unit Testing class that tests the [ThemesMoeParser] class
+ * An enum to model the different kinds of user lists on [themes.moe](https://themes.moe)
+ *
+ * Currently supported are:
+ *
+ * * [MyAnimeList](https://myanimelist.net)
+ * * [Hummingbird](https://hummingbird.me)
  */
-class ThemesMoeParserTest {
-    val standardParser = ThemesMoeParser()
-
-    /**
-     * Tests if the parser fetches the list of series for a specific
-     * [myanimelist.net](https://myanimelist.net) user
-     */
-    @Test
-    fun testFetchingMalUserList() {
-        val results = standardParser.fetchUserList("namboy94", MYANIMELIST)
-    }
-
-    /**
-     * Tests if the parser fetches the list of series for a specific
-     * [hummingbird.me](https://hummingbird.me) user
-     */
-    @Test
-    fun testFetchingHummingbirdUserList() {
-        val results = standardParser.fetchUserList("namboy94", HUMMINGBIRD)
-    }
-
+enum class ListTypes {
+    MYANIMELIST, HUMMINGBIRD
 }

@@ -1,5 +1,7 @@
 package net.namibsun.themes_moe_dl.lib.parsing
 /*
+Copyright Hermann Krumrey<hermann@krumreyh.com>, 2017
+
 This file is part of themes.moe-dl.
 
 themes.moe-dl is free software: you can redistribute it and/or modify
@@ -19,7 +21,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 import org.jsoup.Jsoup
 
 /**
- * ThemesMoeParser is a class that parses https://themes.moe.
+ * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
  *
  * The parser can be configured in a variety of ways to deliver different results
  * using a variety of optional parameters, which all default to true
