@@ -57,10 +57,10 @@ class SeasonsTest {
      */
     @Test
     fun testEnumParameters() {
-        assertEquals(Seasons.SUMMER.value, "summer")
-        assertEquals(Seasons.WINTER.value, "winter")
-        assertEquals(Seasons.FALL.value, "fall")
-        assertEquals(Seasons.SPRING.value, "spring")
+        assertEquals(Seasons.SUMMER.value, "Summer")
+        assertEquals(Seasons.WINTER.value, "Winter")
+        assertEquals(Seasons.FALL.value, "Fall")
+        assertEquals(Seasons.SPRING.value, "Spring")
     }
 
 }
