@@ -27,6 +27,5 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  * * [Hummingbird](https://hummingbird.me)
  */
 enum class ListTypes (@Suppress("unused") val value: String) {
-    MYANIMELIST("mal"),
-    HUMMINGBIRD("hummingbird")
+    MYANIMELIST("mal")
 }

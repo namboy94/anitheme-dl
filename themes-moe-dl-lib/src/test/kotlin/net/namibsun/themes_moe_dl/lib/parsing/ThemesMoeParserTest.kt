@@ -42,14 +42,4 @@ class ThemesMoeParserTest {
         val contains91Days = results.any { it.name == "91 Days" }
         assertTrue(contains91Days)
     }
-
-    /**
-     * Tests if the parser fetches the list of series for a specific
-     * [hummingbird.me](https://hummingbird.me) user
-     */
-    @Test
-    fun testFetchingHummingbirdUserList() {
-        //val results = standardParser.fetchUserList("namboy94", HUMMINGBIRD)
-    }
-
 }
