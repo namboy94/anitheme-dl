@@ -18,6 +18,9 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import org.jsoup.Jsoup
+import org.jsoup.select.Elements
+
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
  *
@@ -26,7 +29,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  *
  * For example, the class may be called with a simple
  *
- *     ThemesMoeParser(),
+ *     ThemesMoeParser()
  *
  *
  * but say one wants to only include series that are currently being watched:
@@ -51,20 +54,77 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  */
 class ThemesMoeParser
     constructor(
-        includeCompleted: Boolean = true,
-        includeCurrentlyWatching: Boolean = true,
-        includeOnHold: Boolean = true,
-        includeDropped: Boolean = true,
-        includeOp: Boolean = true,
-        includeEd: Boolean = true,
-        includeDuplicates: Boolean = true
+            private val includeCompleted: Boolean = true,
+            private val includeCurrentlyWatching: Boolean = true,
+            private val includeOnHold: Boolean = true,
+            private val includeDropped: Boolean = true,
+            private val includeOp: Boolean = true,
+            private val includeEd: Boolean = true,
+            private val includeDuplicates: Boolean = true
     ) {
 
-    private val includeCompleted = includeCompleted
-    private val includeCurrentlyWatching = includeCurrentlyWatching
-    private val includeOnHold = includeOnHold
-    private val includeDropped = includeDropped
-    private val includeOp = includeOp
-    private val includeEd = includeEd
-    private val includeDuplicates = includeDuplicates
+    /**
+     * The base URL for the [themes.moe](https://themes.moe) API
+     */
+    private val baseUrl = "https://themes.moe/includes"
+
+    /**
+     * Fetches all series for a user on one of the list services supported by
+     * [themes.moe](https://themes.moe).
+     *
+     * A basic usage example would be:
+     *
+     *     ThemesMoeParser().fetchUserList("namboy94", MYANIMELIST)
+     *
+     * This will fetch all series for the user "namboy94" using the myanimelst
+     * service of [themes.moe](https://themes.moe)
+     *
+     * @param username The username for which to retrieve the list for
+     * @param listType The type of list to search for. Must be in the [ListTypes] enum
+     * @return A [List] of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
+     */
+    fun fetchUserList(username: String, listType: ListTypes) : List<Series>{
+
+        val request = Jsoup.connect("${this.baseUrl}/get_list.php")
+                .data("username", username)
+                .data("list", listType.value).post()
+
+        val table = request.select("tbody").select("tr")
+        return this.parseTable(table)
+
+    }
+
+    /**
+     * Parses a table Element from [themes.moe](https://themes.moe)
+     *
+     * The list tables from [themes.moe](https://themes.moe) contain 'td' elements,
+     * which each contain two 'tr' elements. The first one of these specifies the
+     * information about a particular series, like the name and/or [myanimelist.net](https://myanimelist.net)
+     * or [hummingbird.me](https://hummingbird.me) URL.
+     *
+     * The second 'tr' element contains multiple theme song elements, that each have a description and
+     * a video file URL.
+     *
+     * @param table The table to parse, must have called '.select("tbody").select("tr")' before passing to this method
+     * @return A [List] of [Series] objects generated while parsing the table
+     */
+    private fun parseTable(table: Elements) : List<Series> {
+
+        val series: MutableList<Series> = mutableListOf()
+
+        for (entry in table) {
+            val name = entry.select("td")[0].text()
+            val parts = entry.select("td")[1].select("a")
+
+            val themes: MutableList<Theme> = mutableListOf()
+            for (theme in parts) {
+                val description = theme.text()
+                val url = theme.attr("href")
+
+                themes.add(Theme(description, url))
+            }
+            series.add(Series(name, themes))
+        }
+        return series
+    }
 }

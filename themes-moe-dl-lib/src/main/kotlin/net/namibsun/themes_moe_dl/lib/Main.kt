@@ -1,13 +1,13 @@
 package net.namibsun.themes_moe_dl.lib
 
 import org.jsoup.Jsoup
+import net.namibsun.themes_moe_dl.lib.parsing.ListTypes
+import net.namibsun.themes_moe_dl.lib.parsing.ThemesMoeParser
 
 /**
  * @param args The
  */
 fun main(args: Array<String>) {
-    println("Hello World")
+    println(ThemesMoeParser().fetchUserList("namboy94", ListTypes.MYANIMELIST))
 
-    val result = Jsoup.connect("https://themes.moe/includes/get_list.php").data("username", "namboy94").data("list", "mal").post()
-    print(result)
 }
