@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.select.Elements
 
@@ -63,6 +64,8 @@ class ThemesMoeParser
             private val includeDuplicates: Boolean = true
     ) {
 
+    private val logger = KotlinLogging.logger {}
+
     /**
      * The base URL for the [themes.moe](https://themes.moe) API
      */
@@ -85,9 +88,13 @@ class ThemesMoeParser
      */
     fun fetchUserList(username: String, listType: ListTypes) : List<Series> {
 
+        logger.info { "Fetching ${listType.name} list for user $username" }
+
         val request = Jsoup.connect("${this.baseUrl}/get_list.php")
                 .data("username", username)
                 .data("list", listType.value).post()
+
+        logger.debug { "HTMLDATA: $request" }
 
         val table = request.select("tbody").select("tr")
         return this.parseTable(table)
