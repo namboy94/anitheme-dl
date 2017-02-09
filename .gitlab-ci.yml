@@ -36,6 +36,8 @@ documentation_gen:
 
 gitstats:
   stage: docs
+  tags:
+    linux-buildserver
   only:
     - master
     - develop
