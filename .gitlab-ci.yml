@@ -9,6 +9,8 @@ init:
   tags:
     - linux-buildserver
   script:
+    - echo $HOME
+    - echo $PATH
     - source $HOME/.bashrc
 
 unittest:
