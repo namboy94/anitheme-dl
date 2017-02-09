@@ -1,7 +1,4 @@
 package net.namibsun.themes_moe_dl.lib.parsing
-
-import java.nio.file.Paths
-
 /*
 Copyright Hermann Krumrey<hermann@krumreyh.com>, 2017
 
@@ -20,6 +17,16 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+import mu.KotlinLogging
+import java.io.File
+import java.io.IOException
+import java.net.URL
+import java.nio.file.Files
+import java.nio.file.Paths
+import java.nio.file.StandardCopyOption
+
+private val logger = KotlinLogging.logger {}
 
 /**
  * The Theme class models an anime theme song indexed on [themes.moe](https://themes.moe).
@@ -40,7 +47,7 @@ class Theme constructor(val description: String, val url: String) {
      * only the original .webm file is kept
      *
      * This method only generates a filename based off the information provided, then delegates
-     * the file download and conversion to the other [download] method
+     * the file download and conversion to the [downloadFile] method
      *
      * @param targetDir The target directory in which the file should be saved
      * @param fileTypes The filetypes to convert the file into. Defaults to only .webm
@@ -53,8 +60,18 @@ class Theme constructor(val description: String, val url: String) {
             prefix: String = "",
             suffix: String = "") {
 
+        val directory = File(targetDir)
+
+        if (!directory.isDirectory) {
+            logger.info { "Creating directory $targetDir" }
+            val directoryCreationStatus = directory.mkdirs()
+
+            if (directoryCreationStatus) { logger.info { "Directory successfully created" } }
+            else { logger.error { "Directory Creation failed" } }
+        }
+
         val filepath = Paths.get(targetDir, "$prefix${this.description}$suffix").toString()
-        this.download(filepath, fileTypes)
+        this.downloadFile(filepath, fileTypes)
     }
 
     /**
@@ -63,11 +80,39 @@ class Theme constructor(val description: String, val url: String) {
      * The [fileTypes] parameter specifies which media formats the file should be
      * converted to. By default, only the original .webm file is downloaded and left as-is.
      *
-     * @param targetFile: The file name of the target file, without any file type associated suffixes like .webm etc.
-     * @param fileTypes: The types of media files to convert the theme song into once downloaded
+     * @param targetFile The file name of the target file, without any file type associated suffixes like .webm etc.
+     * @param fileTypes The types of media files to convert the theme song into once downloaded
+     * @throws IOException if something happened during the download
      */
-    fun download(targetFile: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
-        println(targetFile)
+    fun downloadFile(targetFile: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
+
+        logger.info { "Downloading ${this.url}" }
+
+        val url = URL(this.url)
+        val httpConnection = url.openConnection()
+        httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
+
+        try {
+            val data = httpConnection.inputStream
+            Files.copy(data, Paths.get(targetFile + ".webm"), StandardCopyOption.REPLACE_EXISTING)
+            logger.info { "Download completed" }
+        } catch (e: IOException) {
+            logger.warn { "Download of file ${this.url} failed" }
+            throw e
+        }
+
+        fileTypeLoop@ for (fileType in fileTypes) {
+            when (fileType) {
+                FileTypes.WEBM -> continue@fileTypeLoop
+                else -> {}
+            }
+        }
+
+        if (FileTypes.WEBM !in fileTypes) {
+            logger.info { "Deleting original .webm file" }
+            File(targetFile + ".webm").delete()
+        }
+
     }
 
     /**

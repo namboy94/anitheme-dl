@@ -15,6 +15,8 @@ dependencies {
     compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.5"
     compile "org.jsoup:jsoup:1.9.2"
     compile "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
+    compile 'io.github.microutils:kotlin-logging:1.4.2'
+    compile 'org.slf4j:slf4j-simple:1.6.1'
     ktlint 'com.github.shyiko:ktlint:0.4.0'
 }
 
