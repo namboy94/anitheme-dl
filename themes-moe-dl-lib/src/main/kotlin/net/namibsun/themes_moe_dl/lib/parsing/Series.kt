@@ -17,3 +17,17 @@ GNU General Public License for more details.
 You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
+
+class Series constructor(val name: String, val themes: List<Theme>) {
+
+    fun download(target: String) {
+        for (theme in this.themes) {
+            theme.download(target)
+        }
+    }
+
+    override fun toString() : String {
+        return "${this.name}: ${this.themes}"
+    }
+
+}
