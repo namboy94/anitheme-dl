@@ -32,7 +32,7 @@ class ThemesMoeParserTest {
      */
     @Test
     fun testFetchingMalUserList() {
-        val results = standardParser.fetchUserList("namboy94", MYANIMELIST)
+        //val results = standardParser.fetchUserList("namboy94", MYANIMELIST)
     }
 
     /**
@@ -41,7 +41,7 @@ class ThemesMoeParserTest {
      */
     @Test
     fun testFetchingHummingbirdUserList() {
-        val results = standardParser.fetchUserList("namboy94", HUMMINGBIRD)
+        //val results = standardParser.fetchUserList("namboy94", HUMMINGBIRD)
     }
 
 }
