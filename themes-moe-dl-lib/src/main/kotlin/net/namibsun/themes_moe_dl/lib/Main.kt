@@ -8,6 +8,6 @@ import org.jsoup.Jsoup
 fun main(args: Array<String>) {
     println("Hello World")
 
-    val result = Jsoup.connect("https://themes.moe").data("username", "namboy94").post()
+    val result = Jsoup.connect("https://themes.moe/includes/get_list.php").data("username", "namboy94").data("list", "mal").post()
     print(result)
 }
