@@ -27,10 +27,10 @@ jar {
 
 dokka {
     moduleName = 'themes-moe-dl-lib'
-    outputFormat = 'javadoc'
+    outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
     //processConfigurations = ['compile', 'extra']
-    //includes = ['packages.md', 'extra.md']
+    includes = ['Module.md']
     //samples = ['samples/basic.kt', 'samples/advanced.kt']
     linkMapping {
         dir = "src/main/kotlin"
@@ -38,6 +38,11 @@ dokka {
         suffix = ""
     }
     sourceDirs = files('src/main/kotlin')
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = "javadoc"
+    outputDirectory = "$buildDir/dokkaJavadoc"
 }
 
 jacocoTestReport {
