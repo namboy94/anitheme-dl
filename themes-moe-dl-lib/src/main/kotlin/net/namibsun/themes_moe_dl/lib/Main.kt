@@ -1,6 +1,5 @@
 package net.namibsun.themes_moe_dl.lib
 
-import org.jsoup.Jsoup
 import net.namibsun.themes_moe_dl.lib.parsing.ListTypes
 import net.namibsun.themes_moe_dl.lib.parsing.ThemesMoeParser
 

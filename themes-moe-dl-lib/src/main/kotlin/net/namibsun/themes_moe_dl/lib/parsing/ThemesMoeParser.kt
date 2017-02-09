@@ -83,7 +83,7 @@ class ThemesMoeParser
      * @param listType The type of list to search for. Must be in the [ListTypes] enum
      * @return A [List] of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
      */
-    fun fetchUserList(username: String, listType: ListTypes) : List<Series>{
+    fun fetchUserList(username: String, listType: ListTypes) : List<Series> {
 
         val request = Jsoup.connect("${this.baseUrl}/get_list.php")
                 .data("username", username)
