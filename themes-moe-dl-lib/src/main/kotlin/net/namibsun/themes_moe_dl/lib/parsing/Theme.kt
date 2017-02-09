@@ -22,11 +22,10 @@ import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 import java.net.URL
+import java.nio.file.CopyOption
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
-
-private val logger = KotlinLogging.logger {}
 
 /**
  * The Theme class models an anime theme song indexed on [themes.moe](https://themes.moe).
@@ -38,6 +37,8 @@ private val logger = KotlinLogging.logger {}
  * @param url The URL to the theme song file
  */
 class Theme constructor(val description: String, val url: String) {
+
+    private val logger = KotlinLogging.logger {}
 
     /**
      * Downloads the theme song file to the specified target directory using an automatic naming scheme
@@ -63,15 +64,16 @@ class Theme constructor(val description: String, val url: String) {
         val directory = File(targetDir)
 
         if (!directory.isDirectory) {
-            logger.info { "Creating directory $targetDir" }
+            this.logger.info { "Creating directory $targetDir" }
             val directoryCreationStatus = directory.mkdirs()
 
-            if (directoryCreationStatus) { logger.info { "Directory successfully created" } }
-            else { logger.error { "Directory Creation failed" } }
+            if (directoryCreationStatus) { this.logger.info { "Directory successfully created" } }
+            else { this.logger.error { "Directory Creation failed" } }
         }
 
         val filepath = Paths.get(targetDir, "$prefix${this.description}$suffix").toString()
         this.downloadFile(filepath, fileTypes)
+
     }
 
     /**
@@ -86,30 +88,39 @@ class Theme constructor(val description: String, val url: String) {
      */
     fun downloadFile(targetFile: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
 
-        logger.info { "Downloading ${this.url}" }
+        val fileInfo = this.url.split(".")
+        val target = targetFile + "." + fileInfo[fileInfo.size - 1]
 
-        val url = URL(this.url)
-        val httpConnection = url.openConnection()
-        httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
-
-        try {
-            val data = httpConnection.inputStream
-            Files.copy(data, Paths.get(targetFile + ".webm"), StandardCopyOption.REPLACE_EXISTING)
-            logger.info { "Download completed" }
-        } catch (e: IOException) {
-            logger.warn { "Download of file ${this.url} failed" }
-            throw e
+        if (File(target).isFile) {
+            logger.info { "$target exists. Skipping download" }
         }
+        else {
 
-        fileTypeLoop@ for (fileType in fileTypes) {
-            when (fileType) {
-                FileTypes.WEBM -> continue@fileTypeLoop
-                else -> {}
+            this.logger.info { "Downloading ${this.url} to $target" }
+
+            val url = URL(this.url)
+            val httpConnection = url.openConnection()
+            httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
+
+            try {
+                val data = httpConnection.inputStream
+                Files.copy(data, Paths.get(target), StandardCopyOption.REPLACE_EXISTING)
+                this.logger.info { "Download completed" }
+            } catch (e: IOException) {
+                this.logger.warn { "Download of file ${this.url} failed" }
+                throw e
+            }
+
+            fileTypeLoop@ for (fileType in fileTypes) {
+                when (fileType) {
+                    FileTypes.WEBM -> continue@fileTypeLoop
+                    else -> {}
+                }
             }
         }
 
         if (FileTypes.WEBM !in fileTypes) {
-            logger.info { "Deleting original .webm file" }
+            this.logger.info { "Deleting original .webm file" }
             File(targetFile + ".webm").delete()
         }
 

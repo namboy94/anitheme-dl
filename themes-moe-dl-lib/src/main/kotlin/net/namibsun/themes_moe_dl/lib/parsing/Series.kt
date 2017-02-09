@@ -1,4 +1,9 @@
 package net.namibsun.themes_moe_dl.lib.parsing
+
+import mu.KotlinLogging
+import java.io.File
+import java.nio.file.Paths
+
 /*
 Copyright Hermann Krumrey<hermann@krumreyh.com>, 2017
 
@@ -29,6 +34,8 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Series constructor(val name: String, val themes: List<Theme>) {
 
+    private val logger = KotlinLogging.logger {}
+
     /**
      * Downloads all theme songs of this series to a specified directory
      * Optionally converts the file into different formats
@@ -37,8 +44,19 @@ class Series constructor(val name: String, val themes: List<Theme>) {
      * @param fileTypes The fileTypes to convert the file into. Defaults to only .webm
      */
     fun download(target: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
+
+        val directory = File(Paths.get(target, this.name).toString())
+        if (!directory.isDirectory) {
+            logger.info { "Creating directory ${directory.path}" }
+            val directoryCreationStatus = directory.mkdirs()
+
+            if (directoryCreationStatus) { this.logger.info { "Directory successfully created" } }
+            else { this.logger.error { "Directory Creation failed" } }
+        }
+
+        logger.info { "Starting download of series ${this.name}" }
         for (theme in this.themes) {
-            theme.download(target, fileTypes)
+            theme.download(directory.path, fileTypes)
         }
     }
 
