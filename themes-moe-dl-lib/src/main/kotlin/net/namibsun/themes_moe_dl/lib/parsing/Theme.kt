@@ -92,7 +92,11 @@ class Theme constructor(val description: String, val url: String) {
         val target = targetFile + "." + fileInfo[fileInfo.size - 1]
 
         if (File(target).isFile) {
-            logger.info { "$target exists. Skipping download" }
+            logger.info { "$target exists. Skipping download." }
+        }
+        else if (this.url.startsWith("https://streamable.com")) {
+            logger.info { "${this.url} is on streamable.com, which is not supported. Skipping download." }
+            return // No conversion at end since file does not exist, hence we return
         }
         else {
 
@@ -107,7 +111,7 @@ class Theme constructor(val description: String, val url: String) {
                 Files.copy(data, Paths.get(target), StandardCopyOption.REPLACE_EXISTING)
                 this.logger.info { "Download completed" }
             } catch (e: IOException) {
-                this.logger.warn { "Download of file ${this.url} failed" }
+                this.logger.trace(e) { "Download of file ${this.url} failed" }
                 throw e
             }
 
