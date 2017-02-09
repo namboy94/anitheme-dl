@@ -113,6 +113,7 @@ class ThemesMoeParser
         val series: MutableList<Series> = mutableListOf()
 
         for (entry in table) {
+
             val name = entry.select("td")[0].text()
             val parts = entry.select("td")[1].select("a")
 
