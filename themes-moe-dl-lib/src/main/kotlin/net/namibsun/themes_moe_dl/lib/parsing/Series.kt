@@ -18,7 +18,6 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 /**
  * Series is a class that models an anime Series on [themes.moe](https://themes.moe-dl)
  *

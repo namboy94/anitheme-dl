@@ -36,7 +36,7 @@ class ThemesMoeParserTest {
      */
     @Test
     fun testFetchingMalUserList() {
-        val results = standardParser.fetchUserList("namboy94",ListTypes.MYANIMELIST)
+        val results = standardParser.fetchUserList("namboy94", ListTypes.MYANIMELIST)
         assertTrue(results.size > 1)
 
         val contains91Days = results.any { it.name == "91 Days" }
