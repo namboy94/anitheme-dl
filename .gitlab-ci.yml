@@ -1,17 +1,7 @@
 stages:
-  - initialize
   - test
   - docs
   - finalize
-
-init:
-  stage: initialize
-  tags:
-    - linux-buildserver
-  script:
-    - echo $HOME
-    - echo $PATH
-    - source $HOME/.bashrc
 
 unittest:
   stage: test
