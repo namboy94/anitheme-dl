@@ -33,7 +33,7 @@ class ThemeTest {
      */
     @Test
     fun testToString() {
-        assertEquals(this.testTheme.toString(), "Teststheme: Url")
+        assertEquals(this.testTheme.toString(), "Testtheme: Url")
     }
 
 }
