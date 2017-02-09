@@ -18,14 +18,32 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import org.junit.Test
+import org.junit.Assert.assertEquals
+import org.junit.Assert.assertArrayEquals
+
 /**
- * An enum to model the different kinds of user lists on [themes.moe](https://themes.moe)
- *
- * Currently supported are:
- *
- * * [MyAnimeList](https://myanimelist.net)
- * * [Hummingbird](https://hummingbird.me)
+ * Unit testing class that tests the [FileTypes] enum
  */
-enum class ListTypes (val value: String) {
-    MYANIMELIST("mal")
+class FileTypesTest {
+
+    /**
+     * Tests the enum's [FileTypes.valueOf] method with all possible file types
+     * Also tests the .name property of the enums
+     */
+    @Test
+    fun testValueOf() {
+        assertEquals(FileTypes.valueOf("WEBM"), FileTypes.WEBM)
+        assertEquals(FileTypes.WEBM.name, "WEBM")
+    }
+
+    /**
+     * Tests the enum's [FileTypes.values] method
+     */
+    @Test
+    fun testValues() {
+        val values = FileTypes.values()
+        assertArrayEquals(values, arrayOf(FileTypes.WEBM))
+    }
+
 }
