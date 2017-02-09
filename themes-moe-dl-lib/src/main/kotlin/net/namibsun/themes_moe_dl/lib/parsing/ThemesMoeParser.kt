@@ -1,4 +1,22 @@
 package net.namibsun.themes_moe_dl.lib.parsing
+/*
+This file is part of themes.moe-dl.
+
+themes.moe-dl is free software: you can redistribute it and/or modify
+it under the terms of the GNU General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+themes.moe-dl is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License
+along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+import org.jsoup.Jsoup
 
 /**
  * ThemesMoeParser is a class that parses https://themes.moe.
@@ -9,6 +27,7 @@ package net.namibsun.themes_moe_dl.lib.parsing
  * For example, the class may be called with a simple
  *
  *     ThemesMoeParser(),
+ *
  *
  * but say one wants to only include series that are currently being watched:
  *
