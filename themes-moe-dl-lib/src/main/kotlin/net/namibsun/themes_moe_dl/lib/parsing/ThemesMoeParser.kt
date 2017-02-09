@@ -18,8 +18,6 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import org.jsoup.Jsoup
-
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
  *
@@ -51,13 +49,17 @@ import org.jsoup.Jsoup
  * @param includeOp Specifies if opening themes should be included in the result
  * @param includeEd Speciifes if the ending themes should be included in the result
  */
-class ThemesMoeParser constructor(includeCompleted: Boolean = true,
-                                  includeCurrentlyWatching: Boolean = true,
-                                  includeOnHold: Boolean = true,
-                                  includeDropped: Boolean = true,
-                                  includeOp: Boolean = true,
-                                  includeEd: Boolean = true,
-                                  includeDuplicates: Boolean = true) {
+class ThemesMoeParser
+    constructor(
+        includeCompleted: Boolean = true,
+        includeCurrentlyWatching: Boolean = true,
+        includeOnHold: Boolean = true,
+        includeDropped: Boolean = true,
+        includeOp: Boolean = true,
+        includeEd: Boolean = true,
+        includeDuplicates: Boolean = true
+    ) {
+
     private val includeCompleted = includeCompleted
     private val includeCurrentlyWatching = includeCurrentlyWatching
     private val includeOnHold = includeOnHold
