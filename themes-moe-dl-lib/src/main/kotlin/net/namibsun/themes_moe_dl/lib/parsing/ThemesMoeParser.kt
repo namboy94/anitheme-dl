@@ -20,7 +20,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 
 import mu.KotlinLogging
 import org.jsoup.Jsoup
-import org.jsoup.select.Elements
+import org.jsoup.nodes.Document
 
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
@@ -84,20 +84,103 @@ class ThemesMoeParser
      *
      * @param username The username for which to retrieve the list for
      * @param listType The type of list to search for. Must be in the [ListTypes] enum
-     * @return A [List] of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
+     * @return A List of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
      */
     fun fetchUserList(username: String, listType: ListTypes) : List<Series> {
 
-        logger.info { "Fetching ${listType.name} list for user $username" }
+        this.logger.info { "Fetching ${listType.name} list for user $username" }
 
         val request = Jsoup.connect("${this.baseUrl}/get_list.php")
                 .data("username", username)
                 .data("list", listType.value).post()
 
-        logger.debug { "HTMLDATA: $request" }
+        return this.parseTable(request)
 
-        val table = request.select("tbody").select("tr")
-        return this.parseTable(table)
+    }
+
+    /**
+     * Fetches all series in a generated [themes.moe](https://themes.moe) playlist
+     *
+     * The playlist is identified by the unique id that [themes.moe](https://themes.moe)
+     * assigns to the playlist
+     *
+     * A basic usage example:
+     *
+     *     ThemesMoeParser().fetchPlayList(15214)  // Fetches all series for the playlist 15214
+     *
+     * @param playListId The unique Playlist ID
+     * @return A List of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
+     */
+    fun fetchPlayList(playListId: Int) : List<Series> {
+
+        this.logger.info { "Fetching Playlist $playListId." }
+        val request = Jsoup.connect("${this.baseUrl}/?plist=$playListId").get()
+        return this.parseTable(request)
+
+    }
+
+    /**
+     * Fetches all series for a specified season of anime
+     *
+     * To do this, both a season and year parameter are required
+     * Of course, only seasonal lists that exist on [themes.moe](https://themes.moe)
+     * can be fetched.
+     *
+     * A basic usage example:
+     *
+     *     ThemesMoeParser().fetchSeasonList(2017, Seasons.WINTER)  // Fetches all series from the 2017 winter season
+     *
+     * @param year The year for which to fetch the seasonal list
+     * @param season The season for which to fetch the seasonal list
+     * @return A List of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
+     */
+    fun fetchSeasonList(year: Int, season: Seasons) : List<Series> {
+
+        this.logger.info { "Fetching Season ${season.name} for year $year" }
+        val request = Jsoup.connect("${this.baseUrl}/?s=${season.value}&y=$year").get()
+        return this.parseTable(request)
+
+    }
+
+    /**
+     * Fetches the currently popular series from the popular list on [themes.moe](https://themes.moe)
+     *
+     * This list is of course subject to change whenever the popularity of theme songs
+     * on [themes.moe](https://themes.moe) changes.
+     *
+     * Basic usage example:
+     *
+     *     ThemesMoeParser().fetchPopularList // Fetches all series from the popular list
+     */
+    fun fetchPopularList() : List<Series> {
+
+        this.logger.info { "Fetching popular series." }
+        val request = Jsoup.connect("${this.baseUrl}/?cl=1").get()
+        return this.parseTable(request)
+
+    }
+
+    /**
+     * Searches [themes.moe](https://themes.moe) for opening and ending songs
+     *
+     * This method emulates the search form on [themes.moe](https://themes.moe)
+     *
+     * A basic usage example:
+     *
+     *     ThemesMoeParser().search("One Punch Man")  // Fetches all search results for 'One Punch Man'
+     *
+     * @param query The search term to search for
+     * @return A List of [Series] objects found while parsing the result from [themes.moe](https://themes.moe)
+     */
+    fun search(query: String) : List<Series> {
+
+        this.logger.info { "Searching for: $query" }
+
+        val request = Jsoup.connect("${this.baseUrl}/anime_search.php")
+                .data("search", "-1")
+                .data("name", query).post()
+
+        return this.parseTable(request)
 
     }
 
@@ -112,12 +195,15 @@ class ThemesMoeParser
      * The second 'tr' element contains multiple theme song elements, that each have a description and
      * a video file URL.
      *
-     * @param table The table to parse, must have called '.select("tbody").select("tr")' before passing to this method
-     * @return A [List] of [Series] objects generated while parsing the table
+     * @param request The request to parse, no selects should be called before calling this method
+     * @return A List of [Series] objects generated while parsing the table
      */
-    private fun parseTable(table: Elements) : List<Series> {
+    private fun parseTable(request: Document) : List<Series> {
+
+        this.logger.debug("HTML Data to parse:\n$request")
 
         val series: MutableList<Series> = mutableListOf()
+        val table = request.select("tbody").select("tr")
 
         for (entry in table) {
 

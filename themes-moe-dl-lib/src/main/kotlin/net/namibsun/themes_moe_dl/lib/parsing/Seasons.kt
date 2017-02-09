@@ -26,5 +26,5 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  * @param value The value used by the parser
  */
 enum class Seasons (val value: String) {
-    SUMMER("summer"), WINTER("winter"), FALL("fall"), SPRING("spring")
+    SUMMER("Summer"), WINTER("Winter"), FALL("Fall"), SPRING("Spring")
 }
