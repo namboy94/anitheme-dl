@@ -19,13 +19,12 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 /**
- * An enum to model the different kinds of user lists on [themes.moe](https://themes.moe)
+ * An enum that defines the four seasons in which anime series typically air.
  *
- * Currently supported are:
+ * This is used when parsing for the seasonal theme lists
  *
- * * [MyAnimeList](https://myanimelist.net)
- * * [Hummingbird](https://hummingbird.me)
+ * @param value The value used by the parser
  */
-enum class ListTypes (val value: String) {
-    MYANIMELIST("mal")
+enum class Seasons (val value: String) {
+    SUMMER("summer"), WINTER("winter"), FALL("fall"), SPRING("spring")
 }
