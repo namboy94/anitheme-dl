@@ -1,0 +1,59 @@
+stages:
+  - test
+  - docs
+  - finalize
+
+unittest:
+  stage: test
+  tags:
+    - linux-buildserver
+  script:
+    - gradle test jacocoTestReport
+    - rsync -av --delete-after themes-moe-dl-lib/build/reports/coverage/
+      /var/www/coverage.namibsun.net/public_html/themes-moe-dl-lib
+
+lint:
+  stage: test
+  tags:
+    - linux-buildserver
+  script:
+    - gradle ktlint
+
+documentation_gen:
+  stage: docs
+  tags:
+    - linux-buildserver
+  only:
+      - master
+      - develop
+  script:
+    - gradle dokka
+    - gradle dokkaJavadoc
+    - rsync -av --delete-after themes-moe-dl-lib/build/javadoc/themes-moe-dl-lib/
+      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
+    - rsync -av --delete-after themes-moe-dl-lib/build/dokkaJavadoc/
+      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-javadoc
+
+gitstats:
+  stage: docs
+  only:
+    - master
+    - develop
+  script:
+    - gitstats . gitstats
+    - rsync -av gitstats/ /var/www/gitstats.namibsun.net/public_html/gitstats/themes-moe-dl --delete-before
+    - git_stats generate
+    - rsync -av git_stats/ /var/www/gitstats.namibsun.net/public_html/git_stats/themes-moe-dl --delete-before
+
+
+update_site_indexes:
+  stage: finalize
+  tags:
+    - linux-buildserver
+    - git clone https://gitlab.namibsun.net/namboy94/html-index-generator.git
+    - python html-index-generator/html-index-generator.py /var/www/coverage.namibsun.net/public_html
+      /var/www/coverage.namibsun.net/public_html/index.html
+    - python html-index-generator/html-index-generator.py /var/www/docs.namibsun.net/public_html
+      /var/www/docs.namibsun.net/public_html/index.html
+    - python html-index-generator/html-index-generator.py /var/www/gitstats.namibsun.net/public_html
+      /var/www/gitstats.namibsun.net/public_html/index.html
