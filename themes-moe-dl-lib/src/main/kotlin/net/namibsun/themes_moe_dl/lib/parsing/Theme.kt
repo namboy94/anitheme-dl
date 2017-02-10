@@ -69,7 +69,9 @@ class Theme constructor(val description: String, val url: String) {
             this.logger.info { "Creating directory $targetDir" }
             val directoryCreationStatus = directory.mkdirs()
 
-            if (directoryCreationStatus) { this.logger.info { "Directory successfully created" } }
+            if (directoryCreationStatus && directory.isDirectory) {
+                this.logger.info { "Directory successfully created" }
+            }
             else {
                 this.logger.error { "Directory Creation failed" }
                 throw FileSystemException("Creation of directory $targetDir failed")
