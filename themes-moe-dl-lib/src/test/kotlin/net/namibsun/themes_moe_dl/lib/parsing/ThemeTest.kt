@@ -26,6 +26,7 @@ import org.junit.Assert.assertFalse
 import java.io.File
 import java.io.IOException
 import java.nio.file.Paths
+import java.nio.file.FileSystemException
 
 /**
  * Unit testing class that tests the [Theme] class
@@ -86,11 +87,22 @@ class ThemeTest {
      * without the necessary access rights
      */
     @Test
-    fun testDirectoryCreationError() {
+    fun testDirectoryCreationPermissionError() {
         try {
-            this.testTheme.download(Paths.get("usr/bin/directory_needs_permissions").toString())
+            this.testTheme.download(Paths.get("/", "usr", "bin", "directory_needs_permissions").toString())
             assertTrue(false)
-        } catch (e: Exception) {
+        } catch (e: FileSystemException) {
+            assertTrue(true)
+        }
+    }
+
+    @Test
+    fun testDirectoryCreationLogicalError() {
+        try {
+            File("testfile.webm").createNewFile()
+            this.testTheme.download(Paths.get("testfile.webm", "testdir").toString())
+            assertTrue(false)
+        } catch (e: FileSystemException) {
             assertTrue(true)
         }
     }
