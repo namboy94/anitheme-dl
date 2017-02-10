@@ -22,6 +22,7 @@ import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
+import org.jsoup.parser.Parser
 
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
@@ -114,7 +115,8 @@ class ThemesMoeParser
     fun fetchPlayList(playListId: Int) : List<Series> {
 
         this.logger.info { "Fetching Playlist $playListId." }
-        val request = Jsoup.connect("${this.baseUrl}/?plist=$playListId").get()
+        val request = Jsoup.connect("${this.baseApiUrl}/create_playlist.php").data("plist", "$playListId").post()
+        println(Parser.unescapeEntities(request.toString(), false))
         return this.parseTable(request)
 
     }
@@ -137,7 +139,9 @@ class ThemesMoeParser
     fun fetchSeasonList(year: Int, season: Seasons) : List<Series> {
 
         this.logger.info { "Fetching Season ${season.name} for year $year" }
-        val request = Jsoup.connect("${this.baseUrl}/?s=${season.value}&y=$year").get()
+        val request = Jsoup.connect("${this.baseApiUrl}/specific_list.php")
+                .data("y", "$year")
+                .data("s", season.value).post()
         return this.parseTable(request)
 
     }
@@ -155,7 +159,7 @@ class ThemesMoeParser
     fun fetchPopularList() : List<Series> {
 
         this.logger.info { "Fetching popular series." }
-        val request = Jsoup.connect("${this.baseUrl}/?cl=1").get()
+        val request = Jsoup.connect("${this.baseApiUrl}/specific_list.php").data("id", "1").post()
         return this.parseTable(request)
 
     }
