@@ -35,6 +35,7 @@ class ThemeTest {
     val testTheme = Theme("Testtheme", "Url")
     val validTarget = Theme("Test", "https://namibsun.net/resources/images/small.webm")
     val invalidTarget = Theme("Invalid", "https://namibsun.net/resources/images/__null.png__")
+    val streamableTarget = Theme("Streamable", "https://streamable.com/something.webm")
 
     /**
      * Cleans up any files created by the unit tests
@@ -67,6 +68,29 @@ class ThemeTest {
             this.invalidTarget.download("test")
             assertTrue(false)
         } catch (e: IOException) {
+            assertTrue(true)
+        }
+    }
+
+    /**
+     * Makes sure that files from streamable.com are ignored
+     */
+    @Test
+    fun testSkippingStreamable() {
+        this.streamableTarget.download("test")
+        assertFalse(File(Paths.get("test", "Streamable.webm").toString()).isFile)
+    }
+
+    /**
+     * Tests that a FileSystemException is thrown when trying to create a directory
+     * without the necessary access rights
+     */
+    @Test
+    fun testDirectoryCreationError() {
+        try {
+            this.testTheme.download(Paths.get("usr/bin/directory_needs_permissions").toString())
+            assertTrue(false)
+        } catch (e: Exception) {
             assertTrue(true)
         }
     }

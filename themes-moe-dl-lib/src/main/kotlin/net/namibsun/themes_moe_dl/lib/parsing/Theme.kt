@@ -22,6 +22,7 @@ import mu.KotlinLogging
 import java.io.File
 import java.io.IOException
 import java.net.URL
+import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -54,6 +55,7 @@ class Theme constructor(val description: String, val url: String) {
      * @param prefix An optional prefix for the generated file name
      * @param suffix An optional suffix for the generated file name
      * @throws IOException If an IO error occurs (for example, the URL is invalid)
+     * @throws FileSystemException If the directory could not be created
      */
     fun download(
             targetDir: String,
@@ -68,7 +70,10 @@ class Theme constructor(val description: String, val url: String) {
             val directoryCreationStatus = directory.mkdirs()
 
             if (directoryCreationStatus) { this.logger.info { "Directory successfully created" } }
-            else { this.logger.error { "Directory Creation failed" } }
+            else {
+                this.logger.error { "Directory Creation failed" }
+                throw FileSystemException("Creation of directory $targetDir failed")
+            }
         }
 
         val filepath = Paths.get(targetDir, "$prefix${this.description}$suffix").toString()
