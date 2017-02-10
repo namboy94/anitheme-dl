@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import net.namibsun.themes_moe_dl.lib.utils.deleteFilesAndDirectories
 import org.junit.Test
 import org.junit.Assert.assertTrue
 import org.junit.Assert.assertEquals
@@ -40,12 +41,7 @@ class SeriesTest {
      */
     @After
     fun tearDown() {
-        val cleanupTargets = arrayOf("test")
-
-        cleanupTargets
-                .map(::File)
-                .filter(File::exists)
-                .forEach { it.deleteRecursively() }
+        deleteFilesAndDirectories(arrayOf("test"))
     }
 
     /**
@@ -68,7 +64,6 @@ class SeriesTest {
         assertTrue(File(Paths.get("test", "TestSeries", "TestThemeOne.webm").toString()).isFile)
         assertTrue(File(Paths.get("test", "TestSeries", "TestThemeTwo.webm").toString()).isFile)
     }
-
 
     /**
      * Tests the Series String generating method

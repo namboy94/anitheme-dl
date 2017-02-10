@@ -18,6 +18,7 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import net.namibsun.themes_moe_dl.lib.utils.deleteFilesAndDirectories
 import org.junit.Test
 import org.junit.After
 import org.junit.Assert.assertEquals
@@ -26,7 +27,6 @@ import org.junit.Assert.assertFalse
 import java.io.File
 import java.io.IOException
 import java.nio.file.Paths
-import java.nio.file.FileSystemException
 
 /**
  * Unit testing class that tests the [Theme] class
@@ -43,13 +43,7 @@ class ThemeTest {
      */
     @After
     fun tearDown() {
-
-        val cleanupTargets = arrayOf("test", "testfile.webm")
-
-        cleanupTargets
-                .map(::File)
-                .filter(File::exists)
-                .forEach { it.deleteRecursively() }
+        deleteFilesAndDirectories(arrayOf("test", "testfile.webm"))
     }
 
     /**
@@ -80,36 +74,6 @@ class ThemeTest {
     fun testSkippingStreamable() {
         this.streamableTarget.download("test")
         assertFalse(File(Paths.get("test", "Streamable.webm").toString()).isFile)
-    }
-
-    /**
-     * Tests that a FileSystemException is thrown when trying to create a directory
-     * without the necessary access rights
-     */
-    @Test
-    fun testDirectoryCreationPermissionError() {
-        try {
-            this.testTheme.download(Paths.get("/", "usr", "bin", "directory_needs_permissions").toString())
-            assertTrue(false)
-        } catch (e: FileSystemException) {
-            assertTrue(true)
-        }
-    }
-
-    /**
-     * Tests creating a directory as a child of an existing file
-     *
-     * This should of course not be possible
-     */
-    @Test
-    fun testDirectoryCreationLogicalError() {
-        try {
-            File("testfile.webm").createNewFile()
-            this.testTheme.download(Paths.get("testfile.webm", "testdir").toString())
-            assertTrue(false)
-        } catch (e: FileSystemException) {
-            assertTrue(true)
-        }
     }
 
     /**
