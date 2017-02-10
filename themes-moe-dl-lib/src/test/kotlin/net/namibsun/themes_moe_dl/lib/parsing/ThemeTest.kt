@@ -96,6 +96,11 @@ class ThemeTest {
         }
     }
 
+    /**
+     * Tests creating a directory as a child of an existing file
+     *
+     * This should of course not be possible
+     */
     @Test
     fun testDirectoryCreationLogicalError() {
         try {
@@ -108,10 +113,21 @@ class ThemeTest {
     }
 
     /**
+     * Tests downloading a file to a directory that already exists
+     *
+     * Makes use of [testDownloadingToDirectory] to avoid testing duplicates
+     */
+    @Test
+    fun testDownloadOnExistingDirectory() {
+        this.testDownloadingToDirectory()
+        this.validTarget.download("test")
+        assertTrue(File(Paths.get("test", "Test.webm").toString()).isFile)
+    }
+
+    /**
      * Tests the download method that takes a directory as parameter
      * Suffix and prefix addition is also tested
      */
-    @Test
     fun testDownloadingToDirectory() {
         this.validTarget.download("test", prefix = "pre-", suffix = "-suf")
         assertTrue(File(Paths.get("test", "pre-Test-suf.webm").toString()).isFile)
