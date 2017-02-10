@@ -33,7 +33,7 @@ jar {
 }
 
 dokka {
-    moduleName = 'themes-moe-dl-lib'
+    moduleName = 'themes-moe-dl-cli'
     outputFormat = 'html'
     outputDirectory = "$buildDir/javadoc"
     //processConfigurations = ['compile', 'extra']
