@@ -53,6 +53,7 @@ class Theme constructor(val description: String, val url: String) {
      * @param fileTypes The filetypes to convert the file into. Defaults to only .webm
      * @param prefix An optional prefix for the generated file name
      * @param suffix An optional suffix for the generated file name
+     * @throws IOException If an IO error occurs (for example, the URL is invalid)
      */
     fun download(
             targetDir: String,

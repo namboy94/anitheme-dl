@@ -22,16 +22,19 @@ import org.junit.Test
 import org.junit.After
 import org.junit.Assert.assertEquals
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertFalse
 import java.io.File
+import java.io.IOException
 import java.nio.file.Paths
 
 /**
- * Unit testing class that tests the Theme class
+ * Unit testing class that tests the [Theme] class
  */
 class ThemeTest {
 
     val testTheme = Theme("Testtheme", "Url")
-    val validTarget = Theme("Namibia", "https://namibsun.net/resources/images/namibia.png")
+    val validTarget = Theme("Test", "https://namibsun.net/resources/images/small.webm")
+    val invalidTarget = Theme("Invalid", "https://namibsun.net/resources/images/__null.png__")
 
     /**
      * Cleans up any files created by the unit tests
@@ -39,7 +42,7 @@ class ThemeTest {
     @After
     fun tearDown() {
 
-        val cleanupTargets = arrayOf("test", "testimage.png")
+        val cleanupTargets = arrayOf("test", "testfile.webm")
 
         cleanupTargets
                 .map(::File)
@@ -56,22 +59,61 @@ class ThemeTest {
     }
 
     /**
+     * Tests if downloading from an invalid target throws an IOException
+     */
+    @Test
+    fun testInvalidDownloadTarget() {
+        try {
+            this.invalidTarget.download("test")
+            assertTrue(false)
+        } catch (e: IOException) {
+            assertTrue(true)
+        }
+    }
+
+    /**
      * Tests the download method that takes a directory as parameter
      * Suffix and prefix addition is also tested
      */
     @Test
     fun testDownloadingToDirectory() {
-        this.validTarget.download("test", prefix = "pre", suffix = "suf")
-        assertTrue(File(Paths.get("test", "preNamibiasuf.png").toString()).isFile)
+        this.validTarget.download("test", prefix = "pre-", suffix = "-suf")
+        assertTrue(File(Paths.get("test", "pre-Test-suf.webm").toString()).isFile)
     }
 
     /**
-     * Tests downloading a file using the direct file downloading methos
+     * Executes a series of downloading tests.
+     *
+     * First, [testDownloadingToFile] is called by [testDownloadExisitingFile],
+     * which subsequently gets called by this method. This is done to reduce redundancy
+     * and increase test runtimes
+     *
+     * This test checks if the original webm file is deleted if no filetype is specified
      */
     @Test
+    fun testDeleteWebmAfterwards() {
+        this.testDownloadExisitingFile()
+        this.validTarget.downloadFile("testfile", arrayOf())
+        assertFalse(File("testfile.webm").isFile)
+    }
+
+    /**
+     * Tests downloading a file again even when it has already been downloaded
+     *
+     * The original file should be kept, no new file should be created
+     */
+    fun testDownloadExisitingFile() {
+        this.testDownloadingToFile()
+        this.validTarget.downloadFile("testfile")
+        assertTrue(File("testfile.webm").isFile)
+    }
+
+    /**
+     * Tests downloading a file using the direct file downloading methods
+     */
     fun testDownloadingToFile() {
-        this.validTarget.downloadFile("testimage")
-        assertTrue(File("testimage.png").isFile)
+        this.validTarget.downloadFile("testfile")
+        assertTrue(File("testfile.webm").isFile)
     }
 
 }

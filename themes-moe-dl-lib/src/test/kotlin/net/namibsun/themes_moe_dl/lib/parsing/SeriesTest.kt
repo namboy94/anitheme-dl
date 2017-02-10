@@ -22,7 +22,7 @@ import org.junit.Test
 import org.junit.Assert.assertEquals
 
 /**
- * Unit testing class that tests the Series class
+ * Unit testing class that tests the [Series] class
  */
 class SeriesTest {
 
