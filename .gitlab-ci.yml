@@ -27,12 +27,20 @@ documentation_gen:
       - master
       - develop
   script:
+    - cd themes-moe-dl-lib
+    - gradle dokka
+    - gradle dokkaJavadoc
+    - cd ../themes-moe-dl-cli
     - gradle dokka
     - gradle dokkaJavadoc
     - rsync -av --delete-after themes-moe-dl-lib/build/javadoc/themes-moe-dl-lib/
       /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
     - rsync -av --delete-after themes-moe-dl-lib/build/dokkaJavadoc/
       /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-javadoc
+    - rsync -av --delete-after themes-moe-dl-cli/build/javadoc/themes-moe-dl-cli/
+      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
+    - rsync -av --delete-after themes-moe-dl-cli/build/dokkaJavadoc/
+      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-javadoc
 
 gitstats:
   stage: docs
