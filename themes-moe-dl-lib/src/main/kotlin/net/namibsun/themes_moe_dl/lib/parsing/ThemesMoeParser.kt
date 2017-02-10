@@ -55,21 +55,21 @@ import org.jsoup.nodes.Document
  */
 class ThemesMoeParser
     constructor(
-            private val includeCompleted: Boolean = true,
-            private val includeCurrentlyWatching: Boolean = true,
-            private val includeOnHold: Boolean = true,
-            private val includeDropped: Boolean = true,
-            private val includeOp: Boolean = true,
-            private val includeEd: Boolean = true,
-            private val includeDuplicates: Boolean = true
+            val includeCompleted: Boolean = true,
+            val includeCurrentlyWatching: Boolean = true,
+            val includeOnHold: Boolean = true,
+            val includeDropped: Boolean = true,
+            val includeOp: Boolean = true,
+            val includeEd: Boolean = true,
+            val includeDuplicates: Boolean = true
     ) {
 
-    private val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger {}
 
     /**
      * The base URL for the [themes.moe](https://themes.moe) API
      */
-    private val baseUrl = "https://themes.moe/includes"
+    val baseUrl = "https://themes.moe/includes"
 
     /**
      * Fetches all series for a user on one of the list services supported by

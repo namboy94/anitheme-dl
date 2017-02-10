@@ -36,9 +36,9 @@ import java.nio.file.StandardCopyOption
  * @param description The description of the theme song
  * @param url The URL to the theme song file
  */
-class Theme constructor(private val description: String, private val url: String) {
+class Theme constructor(val description: String, val url: String) {
 
-    private val logger = KotlinLogging.logger {}
+    val logger = KotlinLogging.logger {}
 
     /**
      * Downloads the theme song file to the specified target directory using an automatic naming scheme
