@@ -1,7 +1,7 @@
 package net.namibsun.themes_moe_dl.lib.parsing
 
 import mu.KotlinLogging
-import java.io.File
+import net.namibsun.themes_moe_dl.lib.utils.createDirectoryIfNotExists
 import java.nio.file.Paths
 
 /*
@@ -45,18 +45,12 @@ class Series constructor(val name: String, val themes: List<Theme>) {
      */
     fun download(target: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
 
-        val directory = File(Paths.get(target, this.name).toString())
-        if (!directory.isDirectory) {
-            logger.info { "Creating directory ${directory.path}" }
-            val directoryCreationStatus = directory.mkdirs()
-
-            if (directoryCreationStatus) { this.logger.info { "Directory successfully created" } }
-            else { this.logger.error { "Directory Creation failed" } }
-        }
+        val path = Paths.get(target, this.name).toString()
+        createDirectoryIfNotExists(path)
 
         logger.info { "Starting download of series ${this.name}" }
         for (theme in this.themes) {
-            theme.download(directory.path, fileTypes)
+            theme.download(path, fileTypes)
         }
     }
 

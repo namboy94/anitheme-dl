@@ -19,10 +19,10 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import mu.KotlinLogging
+import net.namibsun.themes_moe_dl.lib.utils.createDirectoryIfNotExists
 import java.io.File
 import java.io.IOException
 import java.net.URL
-import java.nio.file.FileSystemException
 import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
@@ -63,21 +63,7 @@ class Theme constructor(val description: String, val url: String) {
             prefix: String = "",
             suffix: String = "") {
 
-        val directory = File(targetDir)
-
-        if (!directory.isDirectory) {
-            this.logger.info { "Creating directory $targetDir" }
-            val directoryCreationStatus = directory.mkdirs()
-
-            if (directoryCreationStatus) {
-                this.logger.info { "Directory successfully created" }
-            }
-            else {
-                this.logger.error { "Directory Creation failed" }
-                throw FileSystemException("Creation of directory $targetDir failed")
-            }
-        }
-
+        createDirectoryIfNotExists(targetDir)
         val filepath = Paths.get(targetDir, "$prefix${this.description}$suffix").toString()
         this.downloadFile(filepath, fileTypes)
 
