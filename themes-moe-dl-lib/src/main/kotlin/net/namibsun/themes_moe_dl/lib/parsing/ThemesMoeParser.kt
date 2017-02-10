@@ -59,13 +59,6 @@ class ThemesMoeParser
     val logger = KotlinLogging.logger {}
 
     /**
-     * The base URL for [themes.moe](https://themes.moe)
-     *
-     * Used with all GET requests
-     */
-    val baseUrl = "https://themes.moe"
-
-    /**
      * The base URL for the [themes.moe](https://themes.moe) PHP API
      *
      * Used for all POST requests
@@ -116,8 +109,7 @@ class ThemesMoeParser
 
         this.logger.info { "Fetching Playlist $playListId." }
         val request = Jsoup.connect("${this.baseApiUrl}/create_playlist.php").data("plist", "$playListId").post()
-        println(Parser.unescapeEntities(request.toString(), false))
-        return this.parseTable(request)
+        return this.parseTable(normalizeTable(request))
 
     }
 
@@ -184,7 +176,9 @@ class ThemesMoeParser
                 .data("search", "-1")
                 .data("name", query).post()
 
-        return this.parseTable(request)
+        println(normalizeTable(request))
+
+        return this.parseTable(normalizeTable(request))
 
     }
 
@@ -271,5 +265,24 @@ class ThemesMoeParser
             }
         }
         return themes
+    }
+
+    /**
+     * OK, so this is a weird one.
+     *
+     * The 'create_playlist.php' and 'anime_search.php' API endpoints return some weird form of malformed HTML.
+     * It contains '["', and everything after it is Html-entity encoded.
+     *
+     * This method tries to format the POST request result
+     *
+     * @param request The request document to normalize
+     * @return The normalized request
+     */
+    private fun normalizeTable(request: Document) : Document {
+        val normalized = Parser.unescapeEntities(request.toString(), true)
+                .replace("\\/", "/")
+                .replace("\\\"", "")
+                .replace("[\"", "")
+        return Jsoup.parse(normalized)
     }
 }

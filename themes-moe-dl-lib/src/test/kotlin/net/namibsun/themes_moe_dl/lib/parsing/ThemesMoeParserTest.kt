@@ -58,7 +58,7 @@ class ThemesMoeParserTest {
     }
 
     /**
-     * Tests fetching the popular list.
+     * Tests fetching the list of popular anime.
      */
     @Test
     fun testFetchingPopularList() {
@@ -66,19 +66,26 @@ class ThemesMoeParserTest {
         validateResults(results, arrayOf("Sword Art Online", "Steins;Gate", "Shingeki no Kyojin"))
     }
 
-    /*
+    /**
+     * Tests fetching results from the search method. One valid request and one that does not deliver any results
+     */
     @Test
     fun testFetchingSearchResult() {
-        val results = this.standardParser.search("steins gate")
+        val results = this.standardParser.search("d-frag")
         validateResults(results, arrayOf("D-Frag!"))
+        assertTrue(this.standardParser.search("fwkjadijsadjsadsadljsajdalsdd").isEmpty())
     }
 
+    /**
+     * Tests fetching a specific playlist.
+     * Also tests it on a playlist that is unlikely to return any results (negative ID)
+     */
     @Test
     fun testFetchingPlaylist() {
         val results = this.standardParser.fetchPlayList(327031)
         validateResults(results, arrayOf("Sword Art Online", "Steins;Gate", "Shingeki no Kyojin"))
+        assertTrue(this.standardParser.fetchPlayList(-1000).isEmpty())
     }
-    */
 
     /**
      * Checks if a parse result is not empty and contains series with specified names
