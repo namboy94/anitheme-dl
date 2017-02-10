@@ -36,10 +36,40 @@ class ThemesMoeParserTest {
      */
     @Test
     fun testFetchingMalUserList() {
-        val results = standardParser.fetchUserList("namboy94", ListTypes.MYANIMELIST)
-        assertTrue(results.size > 1)
+        val results = this.standardParser.fetchUserList("namboy94", ListTypes.MYANIMELIST)
+        this.validateResults(results, arrayOf("91 Days"))
+    }
 
-        val contains91Days = results.any { it.name == "91 Days" }
-        assertTrue(contains91Days)
+    /*
+    @Test
+    fun testFetchingSeasonalList() {
+        val results = this.standardParser.fetchSeasonList(2016, Seasons.WINTER)
+        validateResults(results, arrayOf())
+    }
+
+    @Test
+    fun testFetchingSearchResult() {
+        val results = this.standardParser.search("d-frag")
+        validateResults(results, arrayOf("D-Frag!"))
+    }
+
+    @Test
+    fun testFetchingPopularList() {
+        val results = this.standardParser.fetchPopularList()
+        validateResults(results, arrayOf())
+    }
+
+    @Test
+    fun testFetchingPlaylist() {
+        val results = this.standardParser.fetchPlayList(12345)
+        validateResults(results, arrayOf())
+    }
+    */
+
+    fun validateResults(results: List<Series>, seriesNames: Array<String>) {
+        assertTrue(results.isNotEmpty())
+        for (seriesName in seriesNames) {
+            assertTrue(results.any { it.name == seriesName })
+        }
     }
 }

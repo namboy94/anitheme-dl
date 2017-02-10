@@ -21,6 +21,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
+import org.jsoup.nodes.Element
 
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
@@ -33,32 +34,22 @@ import org.jsoup.nodes.Document
  *     ThemesMoeParser()
  *
  *
- * but say one wants to only include series that are currently being watched:
+ * but say one wants to only include Openings and disregard duplicates
  *
- *     ThemesMoeParser(includeCompleted = false,
- *                     includeOnHold = false,
- *                     includeDropped = false,
- *                     includeOp = false,
+ *     ThemesMoeParser(includeOp = true,
  *                     includeEd = false,
- *                     includeDuplicates = false)
+ *                     includeDuplicates = true)
  *
- * or say one wants to fetch all series but exclude the Ending themes, which would result in the call
+ *     or:
  *
  *     ThemesMoeParser(includeEd = false)
  *
- * @param includeCompleted Specifies if completed series are fetched, if applicable
- * @param includeCurrentlyWatching Specifies if series currently being watched is fetched, if applicable
- * @param includeDropped Specifies if dropped series are fetched, if applicable
- * @param includeOnHold Specified if series that are on hold should be fetched, if applicable
  * @param includeOp Specifies if opening themes should be included in the result
- * @param includeEd Speciifes if the ending themes should be included in the result
+ * @param includeEd Specifes if the ending themes should be included in the result
+ * @param includeDuplicates Specifies if duplicate series should be fetched
  */
 class ThemesMoeParser
     constructor(
-            val includeCompleted: Boolean = true,
-            val includeCurrentlyWatching: Boolean = true,
-            val includeOnHold: Boolean = true,
-            val includeDropped: Boolean = true,
             val includeOp: Boolean = true,
             val includeEd: Boolean = true,
             val includeDuplicates: Boolean = true
@@ -67,9 +58,18 @@ class ThemesMoeParser
     val logger = KotlinLogging.logger {}
 
     /**
-     * The base URL for the [themes.moe](https://themes.moe) API
+     * The base URL for [themes.moe](https://themes.moe)
+     *
+     * Used with all GET requests
      */
-    val baseUrl = "https://themes.moe/includes"
+    val baseUrl = "https://themes.moe"
+
+    /**
+     * The base URL for the [themes.moe](https://themes.moe) PHP API
+     *
+     * Used for all POST requests
+     */
+    val baseApiUrl = "https://themes.moe/includes"
 
     /**
      * Fetches all series for a user on one of the list services supported by
@@ -90,7 +90,7 @@ class ThemesMoeParser
 
         this.logger.info { "Fetching ${listType.name} list for user $username" }
 
-        val request = Jsoup.connect("${this.baseUrl}/get_list.php")
+        val request = Jsoup.connect("${this.baseApiUrl}/get_list.php")
                 .data("username", username)
                 .data("list", listType.value).post()
 
@@ -176,7 +176,7 @@ class ThemesMoeParser
 
         this.logger.info { "Searching for: $query" }
 
-        val request = Jsoup.connect("${this.baseUrl}/anime_search.php")
+        val request = Jsoup.connect("${this.baseApiUrl}/anime_search.php")
                 .data("search", "-1")
                 .data("name", query).post()
 
@@ -200,6 +200,8 @@ class ThemesMoeParser
      */
     private fun parseTable(request: Document) : List<Series> {
 
+        val history = mutableListOf("")
+
         this.logger.debug("HTML Data to parse:\n$request")
 
         val series: MutableList<Series> = mutableListOf()
@@ -208,17 +210,62 @@ class ThemesMoeParser
         for (entry in table) {
 
             val name = entry.select("td")[0].text()
-            val parts = entry.select("td")[1].select("a")
+            this.logger.info { "Parsing $name" }
 
-            val themes: MutableList<Theme> = mutableListOf()
-            for (theme in parts) {
-                val description = theme.text()
-                val url = theme.attr("href")
-
-                themes.add(Theme(description, url))
+            if (this.includeDuplicates && name in history) {
+                this.logger.info { "Skipping Series, already in history and duplicates disabled" }
+                continue
             }
-            series.add(Series(name, themes))
+            else {
+                this.logger.info { "Adding $name to history" }
+                history.add(name)
+                val themes = parseEntries(entry)
+
+                if (themes.isNotEmpty()) {
+                    series.add(Series(name, themes))
+                    this.logger.info { "Adding series $name with ${themes.size} themes" }
+                }
+                else {
+                    this.logger.info { "Skipping Series $name. No valid themes found" }
+                }
+
+            }
         }
         return series
+    }
+
+    /**
+     * Separately parses the links of a series
+     *
+     * This is done by parsing the second 'td' element and using the 'a' tags to retrieve the
+     * description and video URL for a Series
+     *
+     * @param entry The 'tr' element of the series
+     * @return A List of Theme objects generated by the parser
+     */
+    private fun parseEntries(entry: Element) : List<Theme> {
+
+        val parts = entry.select("td")[1].select("a")
+        val themes: MutableList<Theme> = mutableListOf()
+
+        for (theme in parts) {
+
+            val description = theme.text()
+            val url = theme.attr("href")
+
+            if (!this.includeOp && description.toUpperCase().startsWith("OP")) {
+                this.logger.info { "Skipping $description because Openings are disabled" }
+                continue
+            }
+            else if (!this.includeEd && description.toUpperCase().startsWith("ED")) {
+                this.logger.info { "Skipping $description because Endings are disabled" }
+                continue
+            }
+            else {
+                this.logger.info { "Adding Theme: {$description: $url}" }
+                themes.add(Theme(description, url))
+            }
+        }
+        return themes
     }
 }
