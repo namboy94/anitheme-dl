@@ -20,12 +20,16 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 
 import org.junit.Test
 import org.junit.Assert.assertTrue
+import org.junit.Assert.assertEquals
 
 /**
  * Unit Testing class that tests the [ThemesMoeParser] class
  */
 class ThemesMoeParserTest {
     val standardParser = ThemesMoeParser()
+    val noResultParser = ThemesMoeParser(includeOp = false, includeDuplicates = false, includeEd = false)
+    val noOpParser = ThemesMoeParser(includeOp = false)
+    val noEdParser = ThemesMoeParser(includeEd = false)
 
     /**
      * Tests if the parser fetches the list of series for a specific
@@ -85,6 +89,40 @@ class ThemesMoeParserTest {
         val results = this.standardParser.fetchPlayList(327031)
         validateResults(results, arrayOf("Sword Art Online", "Steins;Gate", "Shingeki no Kyojin"))
         assertTrue(this.standardParser.fetchPlayList(-1000).isEmpty())
+    }
+
+    /**
+     * Test the parser with all filters set to 'false'
+     */
+    @Test
+    fun testNoOpNoEdNoDuplicates() {
+        assertTrue(this.noResultParser.fetchPopularList().isEmpty())
+    }
+
+    /**
+     * Tests the parser with Openings disabled
+     */
+    @Test
+    fun testNoOps() {
+        validateLimitedResultsWithOneTheme(this.noOpParser.search("d-frag"), "D-Frag!", "ED2")
+    }
+
+    /**
+     * Tests the parser with Endings Disabled
+     */
+    @Test
+    fun testNoEds() {
+        validateLimitedResultsWithOneTheme(this.noEdParser.search("d-frag"), "D-Frag!", "OP")
+    }
+
+    /**
+     * Used by [testNoEds] and [testNoOps] to check the results (reduces code duplication)
+     */
+    fun validateLimitedResultsWithOneTheme(results: List<Series>, series: String, theme: String) {
+        assertEquals(1, results.size)
+        assertEquals(results[0].name, series)
+        assertEquals(results[0].themes.size, 1)
+        assertEquals(results[0].themes[0].description, theme)
     }
 
     /**
