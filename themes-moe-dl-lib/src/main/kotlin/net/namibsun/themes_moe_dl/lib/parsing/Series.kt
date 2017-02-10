@@ -32,7 +32,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  * @param name The name of the series
  * @param themes The [List] of [Theme] objects attributed to this series
  */
-class Series constructor(val name: String, val themes: List<Theme>) {
+class Series constructor(private val name: String, private val themes: List<Theme>) {
 
     private val logger = KotlinLogging.logger {}
 
