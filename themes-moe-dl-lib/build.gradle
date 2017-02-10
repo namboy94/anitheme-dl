@@ -1,4 +1,3 @@
-group 'net.namibsun.themes-moe-dl.lib'
 version rootProject.ext.version
 
 apply plugin: 'java'
@@ -26,9 +25,6 @@ sourceSets {
 }
 
 jar {
-    manifest {
-        attributes 'Main-Class': 'net.namibsun.themes_moe_dl.lib.MainKt'
-    }
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
