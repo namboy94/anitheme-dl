@@ -19,28 +19,36 @@ lint:
   script:
     - gradle ktlint
 
-documentation_gen:
+# This is currently not working as intended due to some gradle build error with dokka
+#documentation_gen:
+#  stage: docs
+#  tags:
+#    - linux-buildserver
+#  only:
+#      - master
+#      - develop
+#  script:
+#    - gradle dokka
+#    - gradle dokkaJavadoc
+#    - rsync -av --delete-after themes-moe-dl-lib/build/javadoc/themes-moe-dl-lib/
+#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
+#    - rsync -av --delete-after themes-moe-dl-lib/build/dokkaJavadoc/
+#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-javadoc
+#    - rsync -av --delete-after themes-moe-dl-cli/build/javadoc/themes-moe-dl-cli/
+#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
+#    - rsync -av --delete-after themes-moe-dl-cli/build/dokkaJavadoc/
+#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-javadoc
+
+documentation_gen_with_dokka_fatjar:
   stage: docs
   tags:
-    - linux-buildserver
-  only:
-      - master
-      - develop
+    - linux-builserver
   script:
-    - cd themes-moe-dl-lib
-    - gradle dokka
-    - gradle dokkaJavadoc
-    - cd ../themes-moe-dl-cli
-    - gradle dokka
-    - gradle dokkaJavadoc
-    - rsync -av --delete-after themes-moe-dl-lib/build/javadoc/themes-moe-dl-lib/
-      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
-    - rsync -av --delete-after themes-moe-dl-lib/build/dokkaJavadoc/
-      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-javadoc
-    - rsync -av --delete-after themes-moe-dl-cli/build/javadoc/themes-moe-dl-cli/
-      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
-    - rsync -av --delete-after themes-moe-dl-cli/build/dokkaJavadoc/
-      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-javadoc
+    - wget https://github.com/Kotlin/dokka/releases/download/0.9.10/dokka-fatjar.jar
+    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -include themes-moe-dl-lib/Module.md -module themes-moe-dl-lib
+    - java -jar dokka-fatjar.jar themes-moe-dl-cli/src/main/kotlin -output dokka-cli -format html -module themes-moe-dl-cli
+    - rsync -av --delete-after dokka-lib/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
+    - rsync -av --delete-after dokka-cli/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
 
 gitstats:
   stage: docs
