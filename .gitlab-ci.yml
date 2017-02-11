@@ -1,7 +1,13 @@
 stages:
   - test
+  - build
+  - release
   - docs
   - finalize
+
+variables:
+  GITLAB_ACCESS_TOKEN: "$GITLAB_ACCESS_TOKEN"
+  GITHUB_ACCESS_TOKEN: "$GITHUB_ACCESS_TOKEN"
 
 unittest:
   stage: test
@@ -18,6 +24,48 @@ lint:
     - linux-buildserver
   script:
     - gradle ktlint
+
+build_all:
+  stage: build
+  only:
+    - master
+    - /^release-.*$/
+  tags:
+    - linux-buildserver
+  script:
+    - mkdir -p artifacts
+    - gradle build
+    - mv themes-moe-dl-lib/build/libs/themes-moe-dl-lib-$(gradle version -q).jar artifacts/
+    - mv themes-moe-dl-cli/build/libs/themes-moe-dl-cli-$(gradle version -q).jar artifacts/
+  artifacts:
+     paths:
+      - artifacts/
+
+upload_gitlab_release:
+  stage: release
+  only:
+    - master
+  tags:
+    - linux-buildserver
+  script:
+    - git clone https://gitlab.namibsun.net/namboy94/gitlab-release-uploader.git
+    - git clone https://gitlab.namibsun.net/namboy94/changelog-reader.git
+    - python changelog-reader/changelog-reader.py -c CHANGELOG -d  current_changelog
+    - python gitlab-release-uploader/gitlab-release-uploader.py namboy94 themes.moe-dl $GITLAB_ACCESS_TOKEN
+      $(gradle version -q) current_changelog artifacts -b master -u https://gitlab.namibsun.net
+
+upload_github_release:
+  stage: release
+  only:
+    - master
+  tags:
+    - linux-buildserver
+  script:
+    - git clone https://gitlab.namibsun.net/namboy94/github-release-uploader.git
+    - git clone https://gitlab.namibsun.net/namboy94/changelog-reader.git
+    - python changelog-reader/changelog-reader.py -c CHANGELOG -d current_changelog
+    - python github-release-uploader/github-release-uploader.py namboy94 themes.moe-dl $GITHUB_ACCESS_TOKEN
+      $(gradle version -q) current_changelog artifacts -b master
 
 # This is currently not working as intended due to some gradle build error with dokka
 #documentation_gen:
@@ -45,7 +93,7 @@ documentation_gen_with_dokka_fatjar:
     - linux-buildserver
   script:
     - wget https://github.com/Kotlin/dokka/releases/download/0.9.10/dokka-fatjar.jar
-    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -include themes-moe-dl-lib/Module.md -module themes-moe-dl-lib
+    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -module themes-moe-dl-lib -include themes-moe-dl-lib/Module.md
     - java -jar dokka-fatjar.jar themes-moe-dl-cli/src/main/kotlin -output dokka-cli -format html -module themes-moe-dl-cli
     - rsync -av --delete-after dokka-lib/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
     - rsync -av --delete-after dokka-cli/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html

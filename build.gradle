@@ -1,5 +1,5 @@
 ext {
-    version = "0.0.1"
+    version = "0.1.0"
     versionCode = 1
 }
 
@@ -25,4 +25,8 @@ allprojects {
 
 task clean(type: Delete) {
     delete rootProject.buildDir
+}
+
+task version() {
+    println rootProject.ext.version
 }
