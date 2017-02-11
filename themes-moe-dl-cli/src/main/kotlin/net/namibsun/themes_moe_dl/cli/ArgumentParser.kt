@@ -8,14 +8,28 @@ import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.UnrecognizedOptionException
 import kotlin.system.exitProcess
 
+/**
+ * The Argument Parser class makes use of the Apache Commons CLI to parse the
+ * Arguments for the themes.moe Downloader CLI
+ *
+ * @param args The arguments passed to the main method
+ */
 class ArgumentParser constructor(val args: Array<String>) {
 
-    fun parse() : CommandLine {
-        val options = this.intializeOptions()
+    val options = this.intializeOptions()
 
+    /**
+     * Parses the arguments
+     *
+     * The arguments are also validated to make sure that only valid combinations of arguments
+     * are passed.
+     *
+     * @return The parsed and validated
+     */
+    fun parse() : CommandLine {
         try {
-            val results = GnuParser().parse(options, this.args)
-            this.handleHelpMessage(results, options)
+            val results = GnuParser().parse(this.options, this.args)
+            this.handleHelpMessage(results)
             this.validateArguments(results)
             return results
         } catch (e: UnrecognizedOptionException) {
@@ -24,6 +38,13 @@ class ArgumentParser constructor(val args: Array<String>) {
         }
     }
 
+    /**
+     * Initializes the parsing options.
+     *
+     * Any new arguments for the parser should be added here
+     *
+     * @return the parsing options
+     */
     private fun intializeOptions() : Options {
 
         val options = Options()
@@ -50,14 +71,28 @@ class ArgumentParser constructor(val args: Array<String>) {
 
     }
 
-    private fun handleHelpMessage(results: CommandLine, options: Options) {
+    /**
+     * Checks if the --help argument was passed. If that is the case, this method
+     * prints the help message, then quits the Program's execution
+     *
+     * @param results The results of the argument parsing
+     */
+    private fun handleHelpMessage(results: CommandLine) {
         if (results.hasOption("help")) {
             val formatter = HelpFormatter()
-            formatter.printHelp("themes.moe Downloader CLI", options)
+            formatter.printHelp("themes.moe Downloader CLI", this.options)
             exitProcess(0)
         }
     }
 
+    /**
+     * Checks if all passed arguments are valid for the selected mode
+     *
+     * If any of the validations fail, a message is printed to the console
+     * and the program's execution ends
+     *
+     * @param results The argument parser results
+     */
     private fun validateArguments(results: CommandLine) {
 
         if (!results.hasOption("mode") && results.args.isEmpty()) {
@@ -77,6 +112,11 @@ class ArgumentParser constructor(val args: Array<String>) {
         }
     }
 
+    /**
+     * Validates the arguments for the mode 'mal-username'
+     *
+     * @param results The argument parser results
+     */
     private fun validateMalUserListArguments(results: CommandLine) {
 
         if (!results.hasOption("mal-username")) {
@@ -84,6 +124,11 @@ class ArgumentParser constructor(val args: Array<String>) {
         }
     }
 
+    /**
+     * Validates the arguments for the mode 'seasonal'
+     *
+     * @param results The argument parser results
+     */
     private fun validateSeasonalArguments(results: CommandLine) {
 
         if (!results.hasOption("season") || !results.hasOption("year")) {
@@ -101,6 +146,11 @@ class ArgumentParser constructor(val args: Array<String>) {
         }
     }
 
+    /**
+     * Validates the arguments for the mode 'search'
+     *
+     * @param results The argument parser results
+     */
     private fun validateSearchArguments(results: CommandLine) {
 
         if (!results.hasOption("term")) {
@@ -109,6 +159,11 @@ class ArgumentParser constructor(val args: Array<String>) {
 
     }
 
+    /**
+     * Validates the arguments for the mode 'playlist'
+     *
+     * @param results The argument parser results
+     */
     private fun validatePlaylistArguments(results: CommandLine) {
         if (!results.hasOption("playlist-id")) {
             this.systemExit("A playlist ID must be specified with --playlist-id")
@@ -122,6 +177,11 @@ class ArgumentParser constructor(val args: Array<String>) {
         }
     }
 
+    /**
+     * Prints a message to the console and stops the program's execution
+     *
+     * @param message The message to print
+     */
     private fun systemExit(message: String) {
         println(message)
         exitProcess(1)

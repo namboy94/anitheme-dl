@@ -23,10 +23,10 @@ class Downloader constructor(val options: CommandLine) {
 
     val destination: String =
             if (options.hasOption("destination")) {
-                "themes-moe"
+                options.getOptionValue("destination")
             }
             else {
-                options.getOptionValue("destination")
+                "themes-moe"
             }
 
     fun download() {
