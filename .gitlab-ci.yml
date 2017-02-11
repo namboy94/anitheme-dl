@@ -1,4 +1,5 @@
 stages:
+  - mirror
   - test
   - build
   - release
@@ -8,6 +9,13 @@ stages:
 variables:
   GITLAB_ACCESS_TOKEN: "$GITLAB_ACCESS_TOKEN"
   GITHUB_ACCESS_TOKEN: "$GITHUB_ACCESS_TOKEN"
+
+github_mirror:
+  stage: mirror
+  tags:
+    - linux-buildserver
+  script:
+    - git push --mirror -f git@github.com:namboy94/themes.moe-dl.git
 
 unittest:
   stage: test
