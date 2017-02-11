@@ -42,7 +42,7 @@ lint:
 documentation_gen_with_dokka_fatjar:
   stage: docs
   tags:
-    - linux-builserver
+    - linux-buildserver
   script:
     - wget https://github.com/Kotlin/dokka/releases/download/0.9.10/dokka-fatjar.jar
     - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -include themes-moe-dl-lib/Module.md -module themes-moe-dl-lib
