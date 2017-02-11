@@ -1,3 +1,14 @@
+V 0.7.0
+  - Rewrote the program in Kotlin
+  - Now supports searching
+  - Now supports seasonal lists
+  - Now supports playlists
+  - Now supports the 'popular' list
+  - Currently no GUI
+  - Currently no interactive CLI
+  - Integrated Gradle as build tool
+  - Now using Dokka as documentation generating tool
+  - Testing for style errors using KTLint
 V 0.6.5
   - Fixed the program breaking under Windows when encountering illegal file symbols like :
   - Made the program write a mal-link file
