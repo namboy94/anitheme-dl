@@ -18,9 +18,12 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-
 /**
  * The Main method that starts the CLI
+ *
+ * First, the arguments are parsed and validated by the [ArgumentParser] class.
+ * Afterwards, a [Downloader] interprets the arguments and downloads
+ * theme songs accordingly
  *
  * @param args The Command Line Arguments
  */
