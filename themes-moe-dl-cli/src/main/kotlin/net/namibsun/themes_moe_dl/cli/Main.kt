@@ -19,8 +19,19 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
 import net.namibsun.themes_moe_dl.lib.parsing.ThemesMoeParser
+import org.apache.commons.cli.GnuParser
+import org.apache.commons.cli.Options
 
 fun main(args: Array<String>) {
+
+    val options = Options()
+    options.addOption("a", false, "Test")
+
+    val commandLineParser = GnuParser()
+    val results = commandLineParser.parse(options, args)
+
+    println(results.hasOption("a"))
+
     println("Hello World")
-    ThemesMoeParser()
+    println(ThemesMoeParser().fetchPopularList())
 }
