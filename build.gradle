@@ -1,6 +1,6 @@
 ext {
-    version = "0.1.0"
-    versionCode = 1
+    version = "0.7.0"
+    //androidVersionCode = 1
 }
 
 buildscript {
