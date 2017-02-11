@@ -24,7 +24,7 @@ class ArgumentParser constructor(val args: Array<String>) {
      * The arguments are also validated to make sure that only valid combinations of arguments
      * are passed.
      *
-     * @return The parsed and validated
+     * @return The parsed and validated arguments
      */
     fun parse() : CommandLine {
         try {
