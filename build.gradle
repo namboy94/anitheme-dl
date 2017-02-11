@@ -1,0 +1,32 @@
+ext {
+    version = "0.7.0"
+    //androidVersionCode = 1
+}
+
+buildscript {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+    }
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:1.0.6"
+        classpath "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
+    }
+}
+
+allprojects {
+    repositories {
+        mavenCentral()
+        jcenter()
+        maven { url "http://dl.bintray.com/kotlin/kotlin-eap-1.1" }
+    }
+}
+
+task clean(type: Delete) {
+    delete rootProject.buildDir
+}
+
+task version() {
+    println rootProject.ext.version
+}
