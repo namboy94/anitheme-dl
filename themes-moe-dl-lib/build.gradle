@@ -30,6 +30,7 @@ jar {
     from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
+/*
 dokka {
     moduleName = 'themes-moe-dl-lib'
     outputFormat = 'html'
@@ -48,7 +49,7 @@ dokka {
 task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
     outputFormat = "javadoc"
     outputDirectory = "$buildDir/dokkaJavadoc"
-}
+}*/
 
 jacocoTestReport {
     group = "Reporting"
