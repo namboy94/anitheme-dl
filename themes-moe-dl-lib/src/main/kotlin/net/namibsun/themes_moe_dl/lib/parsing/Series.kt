@@ -1,9 +1,4 @@
 package net.namibsun.themes_moe_dl.lib.parsing
-
-import mu.KotlinLogging
-import net.namibsun.themes_moe_dl.lib.utils.createDirectoryIfNotExists
-import java.nio.file.Paths
-
 /*
 Copyright Hermann Krumrey<hermann@krumreyh.com>, 2017
 
@@ -23,6 +18,10 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import net.namibsun.themes_moe_dl.lib.utils.createDirectoryIfNotExists
+import java.nio.file.Paths
+import java.util.logging.Logger
+
 /**
  * Series is a class that models an anime Series on [themes.moe](https://themes.moe-dl)
  *
@@ -34,7 +33,7 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  */
 class Series constructor(val name: String, val themes: List<Theme>) {
 
-    val logger = KotlinLogging.logger {}
+    val logger: Logger = Logger.getLogger(Series::class.simpleName)
 
     /**
      * Downloads all theme songs of this series to a specified directory
@@ -48,7 +47,7 @@ class Series constructor(val name: String, val themes: List<Theme>) {
         val path = Paths.get(target, this.name).toString()
         createDirectoryIfNotExists(path)
 
-        logger.info { "Starting download of series ${this.name}" }
+        logger.info("Starting download of series ${this.name}")
         for (theme in this.themes) {
             theme.download(path, fileTypes)
         }

@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import mu.KotlinLogging
 import org.jsoup.Jsoup
 import org.jsoup.nodes.Document
 import org.jsoup.nodes.Element
 import org.jsoup.parser.Parser
+import java.util.logging.Logger
 
 /**
  * ThemesMoeParser is a class that parses [themes.moe](https://themes.moe).
@@ -56,7 +56,7 @@ class ThemesMoeParser
             val includeDuplicates: Boolean = true
     ) {
 
-    val logger = KotlinLogging.logger {}
+    val logger: Logger = Logger.getLogger(ThemesMoeParser::class.simpleName)
 
     /**
      * The base URL for the [themes.moe](https://themes.moe) PHP API
@@ -82,7 +82,7 @@ class ThemesMoeParser
      */
     fun fetchUserList(username: String, listType: ListTypes) : List<Series> {
 
-        this.logger.info { "Fetching ${listType.name} list for user $username" }
+        this.logger.info("Fetching ${listType.name} list for user $username")
 
         val request = Jsoup.connect("${this.baseApiUrl}/get_list.php")
                 .data("username", username)
@@ -107,7 +107,7 @@ class ThemesMoeParser
      */
     fun fetchPlayList(playListId: Int) : List<Series> {
 
-        this.logger.info { "Fetching Playlist $playListId." }
+        this.logger.info("Fetching Playlist $playListId.")
         val request = Jsoup.connect("${this.baseApiUrl}/create_playlist.php").data("plist", "$playListId").post()
         return this.parseTable(normalizeTable(request))
 
@@ -130,7 +130,7 @@ class ThemesMoeParser
      */
     fun fetchSeasonList(year: Int, season: Seasons) : List<Series> {
 
-        this.logger.info { "Fetching Season ${season.name} for year $year" }
+        this.logger.info("Fetching Season ${season.name} for year $year")
         val request = Jsoup.connect("${this.baseApiUrl}/specific_list.php")
                 .data("y", "$year")
                 .data("s", season.value).post()
@@ -150,7 +150,7 @@ class ThemesMoeParser
      */
     fun fetchPopularList() : List<Series> {
 
-        this.logger.info { "Fetching popular series." }
+        this.logger.info("Fetching popular series.")
         val request = Jsoup.connect("${this.baseApiUrl}/specific_list.php").data("id", "1").post()
         return this.parseTable(request)
 
@@ -170,13 +170,11 @@ class ThemesMoeParser
      */
     fun search(query: String) : List<Series> {
 
-        this.logger.info { "Searching for: $query" }
+        this.logger.info("Searching for: $query")
 
         val request = Jsoup.connect("${this.baseApiUrl}/anime_search.php")
                 .data("search", "-1")
                 .data("name", query).post()
-
-        println(normalizeTable(request))
 
         return this.parseTable(normalizeTable(request))
 
@@ -200,7 +198,7 @@ class ThemesMoeParser
 
         val history = mutableListOf("")
 
-        this.logger.debug("HTML Data to parse:\n$request")
+        this.logger.fine("HTML Data to parse:\n$request")
 
         val series: MutableList<Series> = mutableListOf()
         val table = request.select("tbody").select("tr")
@@ -208,23 +206,23 @@ class ThemesMoeParser
         for (entry in table) {
 
             val name = entry.select("td")[0].text()
-            this.logger.info { "Parsing $name" }
+            this.logger.info("Parsing $name")
 
             if (this.includeDuplicates && name in history) {
-                this.logger.info { "Skipping Series, already in history and duplicates disabled" }
+                this.logger.info("Skipping Series, already in history and duplicates disabled")
                 continue
             }
             else {
-                this.logger.info { "Adding $name to history" }
+                this.logger.info("Adding $name to history")
                 history.add(name)
                 val themes = parseEntries(entry)
 
                 if (themes.isNotEmpty()) {
                     series.add(Series(name, themes))
-                    this.logger.info { "Adding series $name with ${themes.size} themes" }
+                    this.logger.info("Adding series $name with ${themes.size} themes")
                 }
                 else {
-                    this.logger.info { "Skipping Series $name. No valid themes found" }
+                    this.logger.info("Skipping Series $name. No valid themes found")
                 }
 
             }
@@ -252,15 +250,15 @@ class ThemesMoeParser
             val url = theme.attr("href")
 
             if (!this.includeOp && description.toUpperCase().startsWith("OP")) {
-                this.logger.info { "Skipping $description because Openings are disabled" }
+                this.logger.info("Skipping $description because Openings are disabled")
                 continue
             }
             else if (!this.includeEd && description.toUpperCase().startsWith("ED")) {
-                this.logger.info { "Skipping $description because Endings are disabled" }
+                this.logger.info("Skipping $description because Endings are disabled")
                 continue
             }
             else {
-                this.logger.info { "Adding Theme: {$description: $url}" }
+                this.logger.info("Adding Theme: {$description: $url}")
                 themes.add(Theme(description, url))
             }
         }
