@@ -1,3 +1,4 @@
+//noinspection GrUnresolvedAccess,GroovyAssignabilityCheck
 version rootProject.ext.version
 
 apply plugin: 'java'
@@ -10,13 +11,13 @@ configurations {
 }
 
 dependencies {
-    ktlint 'com.github.shyiko:ktlint:0.4.0'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.5"
-    compile "org.jsoup:jsoup:1.9.2"
-    compile "org.jetbrains.kotlin:kotlin-reflect:1.0.5"
-    testCompile 'junit:junit:4.12'
-    testCompile "org.jetbrains.kotlin:kotlin-test:1.0.5"
-    testCompile "org.jetbrains.kotlin:kotlin-test-junit:1.0.5"
+    ktlint 'com.github.shyiko:ktlint:0.+'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlinVersion}"
+    compile "org.jsoup:jsoup:1.+"
+    compile "org.jetbrains.kotlin:kotlin-reflect:${rootProject.ext.kotlinVersion}"
+    testCompile 'junit:junit:4.+'
+    testCompile "org.jetbrains.kotlin:kotlin-test:${rootProject.ext.kotlinVersion}"
+    testCompile "org.jetbrains.kotlin:kotlin-test-junit:${rootProject.ext.kotlinVersion}"
     //compile "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
 }
 
@@ -28,7 +29,8 @@ sourceSets {
 jar {
     manifest {
     }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { //noinspection GroovyAssignabilityCheck
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
 /*
@@ -64,14 +66,17 @@ jacocoTestReport {
 task ktlint(type: JavaExec) {
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
+    //noinspection GroovyAssignabilityCheck
     args "src/**/*.kt"
 }
 
+//noinspection GroovyAssignabilityCheck
 check.dependsOn ktlint
 
 task ktlintFormat(type: JavaExec) {
     main = "com.github.shyiko.ktlint.Main"
     classpath = configurations.ktlint
+    //noinspection GroovyAssignabilityCheck
     args "-F", "src/**/*.kt"
     ignoreExitValue true
 }
