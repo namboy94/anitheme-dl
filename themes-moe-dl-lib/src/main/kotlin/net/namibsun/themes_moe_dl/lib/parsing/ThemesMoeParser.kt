@@ -198,7 +198,7 @@ class ThemesMoeParser
 
         val history = mutableListOf("")
 
-        this.logger.finest("HTML Data to parse:\n$request")
+        this.logger.fine("HTML Data to parse:\n$request")
 
         val series: MutableList<Series> = mutableListOf()
         val table = request.select("tbody").select("tr")

@@ -1,4 +1,5 @@
 package net.namibsun.themes_moe_dl.cli
+
 /*
 Copyright Hermann Krumrey<hermann@krumreyh.com>, 2017
 
@@ -18,6 +19,10 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
+import java.util.logging.Level
+import java.util.logging.LogManager
+import java.util.logging.ConsoleHandler
+
 /**
  * The Main method that starts the CLI
  *
@@ -31,6 +36,21 @@ fun main(args: Array<String>) {
 
     val argumentParser = ArgumentParser(args)
     val arguments = argumentParser.parse()
+
+    if (arguments.hasOption("debug")) {
+        val logger = LogManager.getLogManager().getLogger("")
+        val handler = ConsoleHandler()
+        handler.level = Level.FINE
+        logger.level = Level.FINE
+        LogManager.getLogManager().getLogger("").addHandler(handler)
+    }
+    else if (arguments.hasOption("verbose")) {
+        // Default Logger Settings
+    }
+    else {
+        LogManager.getLogManager().getLogger("").level = Level.OFF
+    }
+
     val downloader = Downloader(arguments)
     downloader.download()
 
