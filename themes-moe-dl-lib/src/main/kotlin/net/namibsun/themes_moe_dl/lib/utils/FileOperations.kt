@@ -18,11 +18,11 @@ You should have received a copy of the GNU General Public License
 along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-import mu.KotlinLogging
 import java.io.File
 import java.nio.file.FileSystemException
+import java.util.logging.Logger
 
-private val logger = KotlinLogging.logger {}
+private val logger = Logger.getGlobal()
 
 /**
  * Creates a directory if it does not yet exist
@@ -40,14 +40,14 @@ fun createDirectoryIfNotExists(path: String) : File {
 
     if (!directory.isDirectory) {
 
-        logger.info { "Creating Directory $path" }
+        logger.info("Creating Directory $path")
 
         val result = directory.mkdirs()
 
         if (result) {
-            logger.info { "Directory successfully created" }
+            logger.info ("Directory successfully created")
         } else {
-            logger.error { "Directory could not be created. Throwing FileSystemException" }
+            logger.warning ("Directory could not be created. Throwing FileSystemException")
             throw FileSystemException("Directory $path could not be created")
         }
     }

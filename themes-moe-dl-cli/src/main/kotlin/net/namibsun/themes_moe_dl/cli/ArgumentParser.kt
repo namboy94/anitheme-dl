@@ -66,6 +66,8 @@ class ArgumentParser constructor(val args: Array<String>) {
                 "- SUMMER\n- WINTER\n- FALL\n- SPRING")
         options.addOption("i", "playlist-id", true, "specifies the playlist ID in the 'playlist' mode")
         options.addOption("t", "term", true, "specifies the search term in the 'search' mode")
+        options.addOption("v", "verbose", false, "If set, more verbose output is printed to the console")
+        options.addOption("b", "debug", false, "If set, debug information is printed")
 
         return options
 
