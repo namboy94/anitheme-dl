@@ -15,7 +15,12 @@ github_mirror:
   tags:
     - linux-buildserver
   script:
-    - git push --mirror -f git@github.com:namboy94/themes.moe-dl.git
+    - git checkout master
+    - git pull
+    - git push git@github.com:namboy94/themes.moe-dl.git master -f
+    - git checkout develop
+    - git pull
+    - git push git@github.com:namboy94/themes.moe-dl.git develop -f
 
 unittest:
   stage: test
@@ -111,7 +116,7 @@ documentation_gen_with_dokka_fatjar:
       /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli/
     - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/themes-moe-dl-lib/*
       /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/
-    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/style.css mv
+    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/style.css
       /var/www/docs.namibsun.net/public_html/html_docs/style.css
 
 gitstats:
