@@ -24,15 +24,14 @@ be used. In this case **KtLint** is used. Code must pass KtLint's tests.
 
 Additionally, the following coding conventions should be upkept:
 
-Brackets are placed like this:
+* Indentation is done using 4 spaces.
+* Indentation is important. Always indent as if you were writing python code.
+* Line lengths are limited to 120 characters.
+* Brackets are placed like this:
 
-    if (condition) {
-        ...
-    }
-
-Indentation is done using 4 spaces.
-
-Indentation is important. Always indent as if you were writing python code.
+      if (condition) {
+          ...
+      }
 
 **Documentation**
 
@@ -41,3 +40,12 @@ classes, methods and class/instance variables should be decribed using KDoc comm
 
 Hard to understand parts of code within a method should always be commented
 accordingly.
+
+## Contributing
+
+All active development is done on a [self-hosted Gitlab server](https://gitlab.namibsun.net).
+To contribute, send an email to hermann@krumreyh.com to create an account. Once you have an
+account, you may issue a merge or pull request.
+
+Using the Gitlab issue tracker is preferred, but the issues on Github are also
+taken into consideration.
