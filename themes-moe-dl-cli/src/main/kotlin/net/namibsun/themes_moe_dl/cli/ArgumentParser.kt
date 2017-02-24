@@ -51,7 +51,7 @@ class ArgumentParser constructor(val args: Array<String>) {
         options.addOption("h", "help", false, "Prints this help message")
         options.addOption("o", "no-ops", false, "Disables Openings")
         options.addOption("e", "no-eds", false, "Disables Endings")
-        options.addOption("m", "mode", true, "The mode to run the downloader in. Can also be used as a positional" +
+        options.addOption("m", "mode", true, "The mode to run the downloader in. Can also be used as a positional " +
                 "argument.\nCurrently available:\n" +
                 "- popular:      Downloads all themes from the popular list on themes.moe\n" +
                 "- mal-userlist: Downloads all themes associated with a user's MyAnimeList account\n" +

@@ -27,7 +27,7 @@ import org.junit.Assert.assertEquals
  */
 class ThemesMoeParserTest {
     val standardParser = ThemesMoeParser()
-    val noResultParser = ThemesMoeParser(includeOp = false, includeDuplicates = false, includeEd = false)
+    val noResultParser = ThemesMoeParser(includeOp = false, includeEd = false)
     val noOpParser = ThemesMoeParser(includeOp = false)
     val noEdParser = ThemesMoeParser(includeEd = false)
 

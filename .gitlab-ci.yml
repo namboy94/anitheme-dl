@@ -15,7 +15,12 @@ github_mirror:
   tags:
     - linux-buildserver
   script:
-    - git push --mirror -f git@github.com:namboy94/themes.moe-dl.git
+    - git checkout master
+    - git pull
+    - git push git@github.com:namboy94/themes.moe-dl.git master -f
+    - git checkout develop
+    - git pull
+    - git push git@github.com:namboy94/themes.moe-dl.git develop -f
 
 unittest:
   stage: test
@@ -101,10 +106,18 @@ documentation_gen_with_dokka_fatjar:
     - linux-buildserver
   script:
     - wget https://github.com/Kotlin/dokka/releases/download/0.9.10/dokka-fatjar.jar
-    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -module themes-moe-dl-lib -include themes-moe-dl-lib/Module.md
-    - java -jar dokka-fatjar.jar themes-moe-dl-cli/src/main/kotlin -output dokka-cli -format html -module themes-moe-dl-cli
-    - rsync -av --delete-after dokka-lib/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
-    - rsync -av --delete-after dokka-cli/ /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
+    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -module
+      themes-moe-dl-lib -include themes-moe-dl-lib/Module.md
+    - java -jar dokka-fatjar.jar themes-moe-dl-cli/src/main/kotlin -output dokka-cli -format html -module
+      themes-moe-dl-cli
+    - rsync -av --delete-after dokka-lib/ /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib
+    - rsync -av --delete-after dokka-cli/ /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli
+    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli/themes-moe-dl-cli/*
+      /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli/
+    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/themes-moe-dl-lib/*
+      /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/
+    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/style.css
+      /var/www/docs.namibsun.net/public_html/html_docs/style.css
 
 gitstats:
   stage: docs
