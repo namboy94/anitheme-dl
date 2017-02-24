@@ -33,27 +33,6 @@ jar {
         configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
 }
 
-/*
-dokka {
-    moduleName = 'themes-moe-dl-lib'
-    outputFormat = 'html'
-    outputDirectory = "$buildDir/javadoc"
-    //processConfigurations = ['compile', 'extra']
-    includes = ['Module.md']
-    //samples = ['samples/basic.kt', 'samples/advanced.kt']
-    linkMapping {
-        dir = "src/main/kotlin"
-        url = "https://gitlab.namibsun.net/namboy94/themes.moe-dl/blob/master/themes-moe-dl-lib/src/main/kotlin"
-        suffix = ""
-    }
-    sourceDirs = files('src/main/kotlin')
-}
-
-task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
-    outputFormat = "javadoc"
-    outputDirectory = "$buildDir/dokkaJavadoc"
-}*/
-
 jacocoTestReport {
     group = "Reporting"
     reports {
@@ -80,3 +59,24 @@ task ktlintFormat(type: JavaExec) {
     args "-F", "src/**/*.kt"
     ignoreExitValue true
 }
+
+/*
+dokka {
+    moduleName = 'themes-moe-dl-lib'
+    outputFormat = 'html'
+    outputDirectory = "$buildDir/javadoc"
+    //processConfigurations = ['compile', 'extra']
+    includes = ['Module.md']
+    //samples = ['samples/basic.kt', 'samples/advanced.kt']
+    linkMapping {
+        dir = "src/main/kotlin"
+        url = "https://gitlab.namibsun.net/namboy94/themes.moe-dl/blob/master/themes-moe-dl-lib/src/main/kotlin"
+        suffix = ""
+    }
+    sourceDirs = files('src/main/kotlin')
+}
+
+task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
+    outputFormat = "javadoc"
+    outputDirectory = "$buildDir/dokkaJavadoc"
+}*/
