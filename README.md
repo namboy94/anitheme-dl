@@ -1,4 +1,5 @@
 # themes.moe Downloader
+![Logo](resources/images/logo-readme.png "Logo")
 
 The themes.moe Downloader is a program and library for downloading and converting
 anime theme songs indexed on [themes.moe](https://themes.moe).
