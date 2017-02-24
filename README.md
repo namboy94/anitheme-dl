@@ -80,4 +80,4 @@ For more information have a look at the documentation linked further below.
 * [Documentation(CLI)](https://docs.namibsun.net/html_docs/themes-moe-dl-cli/index.html)
 * [Git Statistics (gitstats)](https://gitstats.namibsun.net/gitstats/themes-moe-dl/index.html)
 * [Git Statistics (git_stats)](https://gitstats.namibsun.net/git_stats/themes-moe-dl/index.html)
-* [Test Coverage](https://coverage.namibsun.net/themes-moe-dl/index.html)
+* [Test Coverage(Library)](https://coverage.namibsun.net/themes-moe-dl-lib/index.html)
