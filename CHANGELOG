@@ -1,3 +1,8 @@
+V 0.8.1
+  - Removed unnecessary duplicates option from ThemesMoeParser
+  - Created a comprehensive Readme
+  - Wrote a contribution guide
+  - Created a logo
 V 0.8.0
   - Now uses Java's built-in logging instead of KotlinLogger and SLF4J
 V 0.7.0
