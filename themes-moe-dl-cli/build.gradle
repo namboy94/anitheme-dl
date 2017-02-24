@@ -1,3 +1,4 @@
+//noinspection GroovyAssignabilityCheck
 version rootProject.ext.version
 
 apply plugin: 'java'
@@ -10,12 +11,12 @@ configurations {
 }
 
 dependencies {
-    compile project(':themes-moe-dl-lib')
-    testCompile 'junit:junit:4.12'
-    compile "org.jetbrains.kotlin:kotlin-stdlib:1.0.5"
-    //compile "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
     ktlint 'com.github.shyiko:ktlint:0.4.0'
-    compile group: 'commons-cli', name: 'commons-cli', version: '1.2'
+    compile "org.jetbrains.kotlin:kotlin-stdlib:${rootProject.ext.kotlinVersion}"
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.+'
+    //compile "org.jetbrains.dokka:dokka-gradle-plugin:0.9.13"
+    testCompile 'junit:junit:4.+'
+    compile project(':themes-moe-dl-lib')
 }
 
 sourceSets {
@@ -27,7 +28,35 @@ jar {
     manifest {
         attributes 'Main-Class': 'net.namibsun.themes_moe_dl.cli.MainKt'
     }
-    from { configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+    from { //noinspection GroovyAssignabilityCheck
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) } }
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.enabled true
+        csv.enabled false
+        html.destination "${buildDir}/reports/coverage"
+    }
+}
+
+task ktlint(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    //noinspection GroovyAssignabilityCheck
+    args "src/**/*.kt"
+}
+
+//noinspection GroovyAssignabilityCheck
+check.dependsOn ktlint
+
+task ktlintFormat(type: JavaExec) {
+    main = "com.github.shyiko.ktlint.Main"
+    classpath = configurations.ktlint
+    //noinspection GroovyAssignabilityCheck
+    args "-F", "src/**/*.kt"
+    ignoreExitValue true
 }
 
 /*
@@ -50,27 +79,3 @@ task dokkaJavadoc(type: org.jetbrains.dokka.gradle.DokkaTask) {
     outputFormat = "javadoc"
     outputDirectory = "$buildDir/dokkaJavadoc"
 }*/
-
-jacocoTestReport {
-    group = "Reporting"
-    reports {
-        xml.enabled true
-        csv.enabled false
-        html.destination "${buildDir}/reports/coverage"
-    }
-}
-
-task ktlint(type: JavaExec) {
-    main = "com.github.shyiko.ktlint.Main"
-    classpath = configurations.ktlint
-    args "src/**/*.kt"
-}
-
-check.dependsOn ktlint
-
-task ktlintFormat(type: JavaExec) {
-    main = "com.github.shyiko.ktlint.Main"
-    classpath = configurations.ktlint
-    args "-F", "src/**/*.kt"
-    ignoreExitValue true
-}

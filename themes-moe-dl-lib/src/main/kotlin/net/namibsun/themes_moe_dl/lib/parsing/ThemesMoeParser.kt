@@ -35,11 +35,10 @@ import java.util.logging.Logger
  *     ThemesMoeParser()
  *
  *
- * but say one wants to only include Openings and disregard duplicates
+ * but say one wants to only include Openings
  *
  *     ThemesMoeParser(includeOp = true,
- *                     includeEd = false,
- *                     includeDuplicates = true)
+ *                     includeEd = false)
  *
  *     or:
  *
@@ -47,13 +46,11 @@ import java.util.logging.Logger
  *
  * @param includeOp Specifies if opening themes should be included in the result
  * @param includeEd Specifes if the ending themes should be included in the result
- * @param includeDuplicates Specifies if duplicate series should be fetched
  */
 class ThemesMoeParser
     constructor(
             val includeOp: Boolean = true,
-            val includeEd: Boolean = true,
-            val includeDuplicates: Boolean = true
+            val includeEd: Boolean = true
     ) {
 
     val logger: Logger = Logger.getLogger(ThemesMoeParser::class.simpleName)
@@ -208,8 +205,8 @@ class ThemesMoeParser
             val name = entry.select("td")[0].text()
             this.logger.info("Parsing $name")
 
-            if (this.includeDuplicates && name in history) {
-                this.logger.info("Skipping Series, already in history and duplicates disabled")
+            if (name in history) {
+                this.logger.info("Skipping Series, already in history.")
                 continue
             }
             else {

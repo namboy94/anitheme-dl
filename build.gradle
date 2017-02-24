@@ -1,6 +1,7 @@
 ext {
-    version = "0.8.0"
+    version = "0.8.1"
     //androidVersionCode = 1
+    kotlinVersion = "1.0.5"
 }
 
 buildscript {
