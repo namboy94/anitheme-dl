@@ -36,7 +36,7 @@ Additionally, the following coding conventions should be upkept:
 **Documentation**
 
 We use Dokka to create automated documentation from KDoc comments. As a result, all
-classes, methods and class/instance variables should be decribed using KDoc comments.
+classes, methods and class/instance variables should be described using KDoc comments.
 
 Hard to understand parts of code within a method should always be commented
 accordingly.
