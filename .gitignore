@@ -1,3 +1,5 @@
 .idea/
 themes.moe-dl.iml
 ktlint
+.gradle/
+build/

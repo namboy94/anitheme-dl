@@ -111,7 +111,7 @@ class Theme constructor(val description: String, val url: String) {
             fileTypeLoop@ for (fileType in fileTypes) {
                 when (fileType) {
                     FileTypes.WEBM -> continue@fileTypeLoop
-                    FileTypes.MP3 -> convertToMP3(target)
+                    FileTypes.MP3 -> convertToMP3(targetFile, target)
                     else -> {}
                 }
             }
@@ -123,8 +123,13 @@ class Theme constructor(val description: String, val url: String) {
         }
     }
 
-    private fun convertToMP3(webm: String) {
-
+    /**
+     * Converts a .webm file to mp3 using ffmpeg
+     * @param name: The filename of the resulting mp3 file
+     * @param webm: The path to the source .webm file
+     */
+    private fun convertToMP3(name: String, webm: String) {
+        Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
     }
 
     /**
