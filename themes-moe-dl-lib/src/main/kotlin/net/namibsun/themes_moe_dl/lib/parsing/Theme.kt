@@ -111,6 +111,7 @@ class Theme constructor(val description: String, val url: String) {
             fileTypeLoop@ for (fileType in fileTypes) {
                 when (fileType) {
                     FileTypes.WEBM -> continue@fileTypeLoop
+                    FileTypes.MP3 -> convertToMP3(target)
                     else -> {}
                 }
             }
@@ -120,6 +121,9 @@ class Theme constructor(val description: String, val url: String) {
             this.logger.info { "Deleting original .webm file" }
             File(targetFile + ".webm").delete()
         }
+    }
+
+    private fun convertToMP3(webm: String) {
 
     }
 
