@@ -59,7 +59,7 @@ class Theme constructor(val description: String, val url: String) {
      */
     fun download(
             targetDir: String,
-            fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM),
+            fileTypes: List<FileTypes> = listOf(FileTypes.WEBM),
             prefix: String = "",
             suffix: String = "") {
 
@@ -79,7 +79,7 @@ class Theme constructor(val description: String, val url: String) {
      * @param fileTypes The types of media files to convert the theme song into once downloaded
      * @throws IOException if something happened during the download
      */
-    fun downloadFile(targetFile: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
+    fun downloadFile(targetFile: String, fileTypes: List<FileTypes> = listOf(FileTypes.WEBM)) {
 
         val fileInfo = this.url.split(".")
         val target = targetFile + "." + fileInfo[fileInfo.size - 1]
@@ -129,6 +129,7 @@ class Theme constructor(val description: String, val url: String) {
      * @param webm: The path to the source .webm file
      */
     private fun convertToMP3(name: String, webm: String) {
+        logger.info { "Converting $name to MP3." }
         Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
     }
 
