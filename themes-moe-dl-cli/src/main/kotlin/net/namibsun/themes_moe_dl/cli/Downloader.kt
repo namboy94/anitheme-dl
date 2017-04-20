@@ -1,9 +1,10 @@
 package net.namibsun.themes_moe_dl.cli
 
-import net.namibsun.themes_moe_dl.lib.parsing.ThemesMoeParser
+import net.namibsun.themes_moe_dl.lib.parsing.FileTypes
 import net.namibsun.themes_moe_dl.lib.parsing.Series
 import net.namibsun.themes_moe_dl.lib.parsing.ListTypes
 import net.namibsun.themes_moe_dl.lib.parsing.Seasons
+import net.namibsun.themes_moe_dl.lib.parsing.ThemesMoeParser
 import org.apache.commons.cli.CommandLine
 
 /**
@@ -56,7 +57,7 @@ class Downloader constructor(val options: CommandLine) {
         println("Done. Starting Download to ${this.destination}...")
         for (result in results) {
             print("Downloading ${result.name}...".padEnd(70))
-            result.download(this.destination)
+            result.download(this.destination, this.determineFormats())
             println("Done.")
         }
     }
@@ -91,5 +92,27 @@ class Downloader constructor(val options: CommandLine) {
             }
         }
         return results
+    }
+
+    /**
+     * Determines the File formats in which the downloaded files should be converted to.
+     * @return A list of file types that are applicable
+     */
+    private fun determineFormats() : List<FileTypes> {
+
+        val formats = if (this.options.hasOption("formats")) this.options.getOptionValue("formats") else "WEBM"
+        val splitFormats = formats.split(",")
+        val formatList: MutableList<FileTypes> = mutableListOf()
+
+        for (format in splitFormats) {
+            try {
+                formatList.add(FileTypes.valueOf(format.toUpperCase().trim()))
+            }
+            catch (e: IllegalArgumentException) {
+                println("Unsupported file format: $format")
+            }
+        }
+        formatList.map { format -> println("Format '${format.name}' specified") }
+        return formatList
     }
 }
