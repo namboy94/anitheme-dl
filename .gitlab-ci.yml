@@ -132,9 +132,9 @@ gitstats:
     - git_stats generate
     - rsync -av git_stats/ /var/www/gitstats.namibsun.net/public_html/git_stats/themes-moe-dl --delete-before
 
-
-update_site_indexes:
+update_html_pages:
   stage: finalize
+  when: always
   tags:
     - linux-buildserver
   script:

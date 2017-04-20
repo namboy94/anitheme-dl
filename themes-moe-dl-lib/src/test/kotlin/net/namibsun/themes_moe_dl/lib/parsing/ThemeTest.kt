@@ -109,7 +109,7 @@ class ThemeTest {
     @Test
     fun testDeleteWebmAfterwards() {
         this.testDownloadExisitingFile()
-        this.validTarget.downloadFile("testfile", arrayOf())
+        this.validTarget.downloadFile("testfile", listOf())
         assertFalse(File("testfile.webm").isFile)
     }
 

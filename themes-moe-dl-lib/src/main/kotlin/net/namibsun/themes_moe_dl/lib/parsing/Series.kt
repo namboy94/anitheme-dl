@@ -42,7 +42,7 @@ class Series constructor(val name: String, val themes: List<Theme>) {
      * @param target The target directory in which to save the files
      * @param fileTypes The fileTypes to convert the file into. Defaults to only .webm
      */
-    fun download(target: String, fileTypes: Array<FileTypes> = arrayOf(FileTypes.WEBM)) {
+    fun download(target: String, fileTypes: List<FileTypes> = listOf(FileTypes.WEBM)) {
 
         val path = Paths.get(target, this.name).toString()
         createDirectoryIfNotExists(path)

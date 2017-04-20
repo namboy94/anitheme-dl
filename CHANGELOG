@@ -1,3 +1,5 @@
+V 0.9.0
+  - Implemented MP3 Conversion using ffmpeg
 V 0.8.1
   - Removed unnecessary duplicates option from ThemesMoeParser
   - Created a comprehensive Readme
