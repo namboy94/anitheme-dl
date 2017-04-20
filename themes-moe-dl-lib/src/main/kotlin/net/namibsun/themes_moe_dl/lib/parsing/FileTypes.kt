@@ -27,5 +27,5 @@ along with themes.moe-dl.  If not, see <http://www.gnu.org/licenses/>.
  * * .webm
  */
 enum class FileTypes {
-    WEBM
+    WEBM, MP3
 }

@@ -35,6 +35,8 @@ class FileTypesTest {
     fun testValueOf() {
         assertEquals(FileTypes.valueOf("WEBM"), FileTypes.WEBM)
         assertEquals(FileTypes.WEBM.name, "WEBM")
+        assertEquals(FileTypes.valueOf("MP3"), FileTypes.MP3)
+        assertEquals(FileTypes.MP3.name, "MP3")
     }
 
     /**
@@ -43,7 +45,7 @@ class FileTypesTest {
     @Test
     fun testValues() {
         val values = FileTypes.values()
-        assertArrayEquals(values, arrayOf(FileTypes.WEBM))
+        assertArrayEquals(values, arrayOf(FileTypes.WEBM, FileTypes.MP3))
     }
 
 }

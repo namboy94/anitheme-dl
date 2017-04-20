@@ -1,4 +1,8 @@
 # themes.moe Downloader
+|master|develop|
+|:---:|:---:|
+|[![build status](https://gitlab.namibsun.net/namboy94/themes.moe-dl/badges/master/build.svg)](https://gitlab.namibsun.net/namboy94/themes.moe-dl/commits/master)|[![build status](https://gitlab.namibsun.net/namboy94/themes.moe-dl/badges/develop/build.svg)](https://gitlab.namibsun.net/namboy94/themes.moe-dl/commits/develop)|
+
 ![Logo](resources/images/logo-readme.png "Logo")
 
 The themes.moe Downloader is a program and library for downloading and converting

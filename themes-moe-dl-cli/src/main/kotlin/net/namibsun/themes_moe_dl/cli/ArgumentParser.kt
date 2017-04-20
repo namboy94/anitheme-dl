@@ -2,7 +2,7 @@ package net.namibsun.themes_moe_dl.cli
 
 import net.namibsun.themes_moe_dl.lib.parsing.Seasons
 import org.apache.commons.cli.CommandLine
-import org.apache.commons.cli.GnuParser
+import org.apache.commons.cli.DefaultParser
 import org.apache.commons.cli.Options
 import org.apache.commons.cli.HelpFormatter
 import org.apache.commons.cli.UnrecognizedOptionException
@@ -28,7 +28,7 @@ class ArgumentParser constructor(val args: Array<String>) {
      */
     fun parse() : CommandLine {
         try {
-            val results = GnuParser().parse(this.options, this.args)
+            val results = DefaultParser().parse(this.options, this.args)
             this.handleHelpMessage(results)
             this.validateArguments(results)
             return results
@@ -68,6 +68,8 @@ class ArgumentParser constructor(val args: Array<String>) {
         options.addOption("t", "term", true, "specifies the search term in the 'search' mode")
         options.addOption("v", "verbose", false, "If set, more verbose output is printed to the console")
         options.addOption("b", "debug", false, "If set, debug information is printed")
+        options.addOption("f", "formats", true, "A list of formats to convert this to. Defaults to .webm. " +
+                "Must be a comma-separated string of formats. Available are: WEBM, MP3")
 
         return options
 
