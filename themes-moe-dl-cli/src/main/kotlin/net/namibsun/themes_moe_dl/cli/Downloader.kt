@@ -52,12 +52,14 @@ class Downloader constructor(val options: CommandLine) {
      */
     fun download() {
 
+        val formats = this.determineFormats()
+
         println("Fetching Series info...")
         val results = this.parse()
         println("Done. Starting Download to ${this.destination}...")
         for (result in results) {
             print("Downloading ${result.name}...".padEnd(70))
-            result.download(this.destination, this.determineFormats())
+            result.download(this.destination, formats)
             println("Done.")
         }
     }
