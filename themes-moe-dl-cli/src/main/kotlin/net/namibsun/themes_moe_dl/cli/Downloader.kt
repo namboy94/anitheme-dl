@@ -58,9 +58,15 @@ class Downloader constructor(val options: CommandLine) {
         val results = this.parse()
         println("Done. Starting Download to ${this.destination}...")
         for (result in results) {
-            print("Downloading ${result.name}...".padEnd(70))
-            result.download(this.destination, formats)
-            println("Done.")
+
+            try {
+                print("Downloading ${result.name}...".padEnd(70))
+                result.download(this.destination, formats, 3)
+                println("Done.")
+            }
+            catch (e: Exception) {
+                println("Download of ${result.name} failed.")
+            }
         }
     }
 
