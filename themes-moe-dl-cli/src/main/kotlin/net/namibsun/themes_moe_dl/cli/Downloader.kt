@@ -60,9 +60,9 @@ class Downloader constructor(val options: CommandLine) {
         for (result in results) {
 
             try {
-                print("Downloading ${result.name}...".padEnd(70))
+                println("Downloading ${result.name}...")
                 result.download(this.destination, formats, 3)
-                println("Done.")
+                println("\nDone.")
             }
             catch (e: Exception) {
                 println("Download of ${result.name} failed.")
