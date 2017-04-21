@@ -26,6 +26,8 @@ import java.nio.file.Files
 import java.nio.file.Paths
 import java.nio.file.StandardCopyOption
 import java.util.logging.Logger
+import javax.net.ssl.SSLException
+import kotlin.concurrent.thread
 
 /**
  * The Theme class models an anime theme song indexed on [themes.moe](https://themes.moe).
@@ -38,7 +40,12 @@ import java.util.logging.Logger
  */
 class Theme constructor(val description: String, val url: String) {
 
-    val logger: Logger = Logger.getLogger(Theme::class.simpleName)
+    val logger: Logger = Logger.getLogger(Theme::class.qualifiedName)
+
+    /**
+     * Instance variable that is set to true whenever a download is progressing.
+     */
+    var downloading = false
 
     /**
      * Downloads the theme song file to the specified target directory using an automatic naming scheme
@@ -48,12 +55,13 @@ class Theme constructor(val description: String, val url: String) {
      * only the original .webm file is kept
      *
      * This method only generates a filename based off the information provided, then delegates
-     * the file download and conversion to the [downloadFile] method
+     * the file download and conversion to the [handleDownload] method
      *
      * @param targetDir The target directory in which the file should be saved
      * @param fileTypes The filetypes to convert the file into. Defaults to only .webm
      * @param prefix An optional prefix for the generated file name
      * @param suffix An optional suffix for the generated file name
+     * @param retriesAllowed The amount of times the download should be retried before giving up.
      * @throws IOException If an IO error occurs (for example, the URL is invalid)
      * @throws FileSystemException If the directory could not be created
      */
@@ -61,28 +69,33 @@ class Theme constructor(val description: String, val url: String) {
             targetDir: String,
             fileTypes: List<FileTypes> = listOf(FileTypes.WEBM),
             prefix: String = "",
-            suffix: String = "") {
+            suffix: String = "",
+            retriesAllowed: Int = 0) {
 
         createDirectoryIfNotExists(targetDir)
         val filepath = Paths.get(targetDir, "$prefix${this.description}$suffix").toString()
-        this.downloadFile(filepath, fileTypes)
+        this.handleDownload(filepath, fileTypes, retriesAllowed)
 
     }
 
     /**
-     * Downloads the theme song file to a specified file name.
+     * Handles the different cases of the existing file structure's state and delegates
+     * downloading and converting.
      *
      * The [fileTypes] parameter specifies which media formats the file should be
      * converted to. By default, only the original .webm file is downloaded and left as-is.
      *
      * @param targetFile The file name of the target file, without any file type associated suffixes like .webm etc.
      * @param fileTypes The types of media files to convert the theme song into once downloaded
+     * @param retriesAllowed The amount of times the download should be retried before giving up.
      * @throws IOException if something happened during the download
      */
-    fun downloadFile(targetFile: String, fileTypes: List<FileTypes> = listOf(FileTypes.WEBM)) {
+    fun handleDownload(targetFile: String,
+                       fileTypes: List<FileTypes> = listOf(FileTypes.WEBM),
+                       retriesAllowed: Int = 0) {
 
-        val fileInfo = this.url.split(".")
-        val target = targetFile + "." + fileInfo[fileInfo.size - 1]
+        val extension = this.url.split(".").last()
+        val target = "$targetFile.$extension"
 
         if (File(target).isFile) {
             logger.info { "$target exists. Skipping download." }
@@ -92,34 +105,127 @@ class Theme constructor(val description: String, val url: String) {
             return // No conversion at end since file does not exist, hence we return
         }
         else {
-
             this.logger.info { "Downloading ${this.url} to $target" }
+            this.downloadFile(target, retriesAllowed)
+        }
+        this.handleConversion(targetFile, target, fileTypes)
+    }
 
-            val url = URL(this.url)
-            val httpConnection = url.openConnection()
-            httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
+    /**
+     * Downloads the file from the URL to a local file.
+     * Starts a separate thread that prints the current progress to the terminal
+     * Handles retries of downloads
+     * @param target The target file of the download in the local file system
+     * @param retriesAllowed The amount of retries that are allowed
+     */
+    fun downloadFile(target: String, retriesAllowed: Int = 0) {
 
+        var url = URL(this.url)
+        var httpConnection = url.openConnection()
+        httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
+
+        this.downloading = true
+        var retryCount = 0
+
+        this.printDownloadProgress(target, httpConnection.contentLength)
+
+        while (this.downloading) {
             try {
                 val data = httpConnection.inputStream
                 Files.copy(data, Paths.get(target), StandardCopyOption.REPLACE_EXISTING)
                 this.logger.info { "Download completed" }
-            } catch (e: IOException) {
-                this.logger.severe { "Download of file ${this.url} failed" }
-                throw e
-            }
+                this.downloading = false
 
-            fileTypeLoop@ for (fileType in fileTypes) {
-                when (fileType) {
-                    FileTypes.WEBM -> continue@fileTypeLoop
-                    FileTypes.MP3 -> convertToMP3(targetFile, target)
-                    else -> {}
+            } catch (e: Exception) {
+                this.handleExceptionInDownload(e, target, retryCount++, retriesAllowed)
+                // Re-establish connection
+                url = URL(this.url)
+                httpConnection = url.openConnection()
+                httpConnection.addRequestProperty("User-Agent", "Mozilla/4.0")
+            }
+        }
+    }
+
+    /**
+     * Handles an exception caught in the [downloadFile] method
+     * Allows for retries, if the maximum amount of retries is exceeded, throws the exception again, after
+     * aborting the download.
+     * @param exception The caught exception
+     * @param target The target file to which is being downloaded
+     * @param retries The amount of retries already attempted
+     * @param maxRetries The maximum amount of retries allowed
+     */
+    fun handleExceptionInDownload(exception: Exception, target: String, retries: Int, maxRetries: Int) {
+
+        this.logger.severe { "Download of file ${this.url} failed" }
+
+        when (exception) {
+            is IOException,
+            is SSLException -> {
+                if (retries > maxRetries) {
+                    this.logger.severe("Maximum number of retries attempted.")
+                    this.abortDownload(target)
+                    throw exception
                 }
+                else {
+                    this.logger.info("Retrying download...")
+                }
+            }
+            else -> {
+                this.logger.severe("Unknown error occurred.")
+                this.logger.fine(exception.toString())
+                this.abortDownload(target)
+                throw exception
+            }
+        }
+    }
+
+    /**
+     * Aborts the download. Resets the [downloading] flag and deletes the target file
+     * @param target The target file to delete on abort
+     */
+    fun abortDownload(target: String) {
+        this.downloading = false
+        this.logger.severe("Aborted Download of $target")
+        if (File(target).exists()) {
+            File(target).delete()
+        }
+    }
+
+    /**
+     * Starts a new thread which continuously prints the current progress to the terminal
+     * @param target The target file. Used to check the current size
+     * @param size The total size of the download target in bytes
+     */
+    fun printDownloadProgress(target: String, size: Int) {
+        thread(start=true) {
+            val downloadFile = File(target)
+
+            while (this.downloading) {
+                print("Progress: ${downloadFile.length() / 1000} KB / ${size / 1000} KB\r")
+                Thread.sleep(500)
+            }
+        }
+    }
+
+    /**
+     * Handles the conversion of the WEBM files to the various specified formats
+     * @param name The name of the downloaded file without any extension
+     * @param webmFile the path to the original webm file
+     * @param fileTypes The file types to which to convert to
+     */
+    fun handleConversion(name: String, webmFile: String, fileTypes: List<FileTypes>) {
+
+        fileTypeLoop@ for (fileType in fileTypes) {
+            when (fileType) {
+                FileTypes.WEBM -> continue@fileTypeLoop
+                FileTypes.MP3 -> convertToMP3(name, webmFile)
             }
         }
 
-        if (FileTypes.WEBM !in fileTypes) {
+        if (FileTypes.WEBM !in fileTypes && File(webmFile).exists()) {
             this.logger.info { "Deleting original .webm file" }
-            File(targetFile + ".webm").delete()
+            File(webmFile).delete()
         }
     }
 
@@ -129,8 +235,14 @@ class Theme constructor(val description: String, val url: String) {
      * @param webm: The path to the source .webm file
      */
     private fun convertToMP3(name: String, webm: String) {
-        logger.info { "Converting $name to MP3." }
-        Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
+        if (!File(name + ".mp3").exists()) {
+            logger.info { "Converting $name to MP3." }
+            Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
+                    .waitFor()
+        }
+        else {
+            logger.fine("MP3 File exists, skipping: ${name + ".mp3"}")
+        }
     }
 
     /**
