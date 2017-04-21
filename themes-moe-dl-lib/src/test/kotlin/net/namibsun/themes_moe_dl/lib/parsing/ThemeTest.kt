@@ -109,7 +109,7 @@ class ThemeTest {
     @Test
     fun testDeleteWebmAfterwards() {
         this.testDownloadExisitingFile()
-        this.validTarget.downloadFile("testfile", listOf())
+        this.validTarget.handleDownload("testfile", listOf())
         assertFalse(File("testfile.webm").isFile)
     }
 
@@ -120,7 +120,7 @@ class ThemeTest {
      */
     fun testDownloadExisitingFile() {
         this.testDownloadingToFile()
-        this.validTarget.downloadFile("testfile")
+        this.validTarget.handleDownload("testfile")
         assertTrue(File("testfile.webm").isFile)
     }
 
@@ -128,7 +128,7 @@ class ThemeTest {
      * Tests downloading a file using the direct file downloading methods
      */
     fun testDownloadingToFile() {
-        this.validTarget.downloadFile("testfile")
+        this.validTarget.handleDownload("testfile")
         assertTrue(File("testfile.webm").isFile)
     }
 
