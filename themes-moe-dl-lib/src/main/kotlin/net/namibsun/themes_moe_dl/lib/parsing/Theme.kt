@@ -129,8 +129,13 @@ class Theme constructor(val description: String, val url: String) {
      * @param webm: The path to the source .webm file
      */
     private fun convertToMP3(name: String, webm: String) {
-        logger.info { "Converting $name to MP3." }
-        Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
+        if (File(name + ".mp3").exists()) {
+            logger.info { "Converting $name to MP3." }
+            Runtime.getRuntime().exec(arrayOf("ffmpeg", "-i", webm, "-acodec", "libmp3lame", "-aq", "4", name + ".mp3"))
+        }
+        else {
+            logger.fine("MP3 File exists, skipping: ${name + ".png"}")
+        }
     }
 
     /**
