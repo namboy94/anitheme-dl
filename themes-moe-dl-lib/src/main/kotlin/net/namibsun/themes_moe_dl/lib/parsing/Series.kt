@@ -41,15 +41,16 @@ class Series constructor(val name: String, val themes: List<Theme>) {
      *
      * @param target The target directory in which to save the files
      * @param fileTypes The fileTypes to convert the file into. Defaults to only .webm
+     * @param retriesAllowed The amount of times the program may re-attempt a download
      */
-    fun download(target: String, fileTypes: List<FileTypes> = listOf(FileTypes.WEBM)) {
+    fun download(target: String, fileTypes: List<FileTypes> = listOf(FileTypes.WEBM), retriesAllowed: Int = 0) {
 
         val path = Paths.get(target, this.name).toString()
         createDirectoryIfNotExists(path)
 
         logger.info("Starting download of series ${this.name}")
         for (theme in this.themes) {
-            theme.download(path, fileTypes)
+            theme.download(path, fileTypes, retriesAllowed=retriesAllowed)
         }
     }
 
