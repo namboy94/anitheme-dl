@@ -1,7 +1,9 @@
 # themes.moe Downloader
+
 |master|develop|
-|:---:|:---:|
-|[![build status](https://gitlab.namibsun.net/namboy94/themes.moe-dl/badges/master/build.svg)](https://gitlab.namibsun.net/namboy94/themes.moe-dl/commits/master)|[![build status](https://gitlab.namibsun.net/namboy94/themes.moe-dl/badges/develop/build.svg)](https://gitlab.namibsun.net/namboy94/themes.moe-dl/commits/develop)|
+|:----:|:-----:|
+|[![build status](https://gitlab.namibsun.net/namibsun/kotlin/anitheme-dl/badges/master/build.svg)](https://gitlab.namibsun.net/namibsun/kotlin/anitheme-dl/commits/master)|[![build status](https://gitlab.namibsun.net/namibsun/kotlin/anitheme-dl/badges/develop/build.svg)](https://gitlab.namibsun.net/namibsun/kotlin/anitheme-dl/commits/develop)|
+
 
 ![Logo](resources/images/logo-readme.png "Logo")
 
@@ -78,11 +80,9 @@ For more information have a look at the documentation linked further below.
 
 ## Links
 
-* [Changelog](https://gitlab.namibsun.net/namboy94/themes.moe-dl/raw/master/CHANGELOG)
-* [Gitlab](https://gitlab.namibsun.net/namboy94/themes.moe-dl)
-* [Github](https://github.com/namboy94/themes.moe-dl)
-* [Documentation(Library)](https://docs.namibsun.net/html_docs/themes-moe-dl-lib/index.html)
-* [Documentation(CLI)](https://docs.namibsun.net/html_docs/themes-moe-dl-cli/index.html)
-* [Git Statistics (gitstats)](https://gitstats.namibsun.net/gitstats/themes-moe-dl/index.html)
-* [Git Statistics (git_stats)](https://gitstats.namibsun.net/git_stats/themes-moe-dl/index.html)
-* [Test Coverage(Library)](https://coverage.namibsun.net/themes-moe-dl-lib/index.html)
+* [Changelog](CHANGELOG)
+* [Changelog (German)](CHANGELOG-de-DE)
+* [License (GPLv3)](LICENSE)
+* [Gitlab](https://gitlab.namibsun.net/namibsun/kotlin/anitheme-dl)
+* [Github](https://github.com/namboy94/anitheme-dl)
+* [Progstats](https://progstats.namibsun.net/projects/anitheme-dl)

@@ -17,6 +17,21 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+package net.namibsun.anitheme.dl.cli
+
+import org.junit.Test
+import kotlin.test.assertEquals
+
+/**
+ * Dummy Test
+ */
+class DummyTest {
+
+    /**
+     * Dummy Test
+     */
+    @Test
+    fun test() {
+        assertEquals(1, 1)
+    }
+}

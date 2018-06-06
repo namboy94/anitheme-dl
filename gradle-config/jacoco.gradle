@@ -17,6 +17,17 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+apply plugin: 'jacoco'
+
+dependencies {
+    testImplementation "org.jetbrains.kotlin:kotlin-test-junit:1.1.51"
+}
+
+jacocoTestReport {
+    group = "Reporting"
+    reports {
+        xml.setEnabled(true)
+        csv.setEnabled(false)
+        html.setDestination(new File("${buildDir}/reports/coverage"))
+    }
+}

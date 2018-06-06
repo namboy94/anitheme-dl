@@ -17,6 +17,17 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+package net.namibsun.anitheme.dl.lib.utils
+
+import java.io.File
+
+/**
+ * Deletes all files passed via the targets parameter
+ */
+fun deleteFilesAndDirectories(targets: Array<String>) {
+
+    targets
+            .map(::File)
+            .filter(File::exists)
+            .forEach { it.deleteRecursively() }
+}

@@ -17,6 +17,18 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+jar {
+    manifest {
+        attributes 'Main-Class': 'net.namibsun.anitheme_dl_cli.MainKt'
+    }
+    from {
+        configurations.compile.collect {
+            it.isDirectory() ? it : zipTree(it)
+        }
+    }
+}
+
+dependencies {
+    compile group: 'commons-cli', name: 'commons-cli', version: '1.+'
+    compile project(':anitheme-dl-lib')
+}
