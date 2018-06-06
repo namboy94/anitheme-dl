@@ -17,6 +17,16 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+package net.namibsun.anitheme.dl.lib.parsing
+
+/**
+ * An enum that defines which file types are currently supported for downloading
+ * from [themes.moe](https://themes.moe)
+ *
+ * Currently supported are:
+ *
+ * * .webm
+ */
+enum class FileTypes {
+    WEBM, MP3
+}

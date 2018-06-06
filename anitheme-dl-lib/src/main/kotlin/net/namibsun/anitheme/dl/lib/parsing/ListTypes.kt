@@ -17,6 +17,16 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+package net.namibsun.anitheme.dl.lib.parsing
+
+/**
+ * An enum to model the different kinds of user lists on [themes.moe](https://themes.moe)
+ *
+ * Currently supported are:
+ *
+ * * [MyAnimeList](https://myanimelist.net)
+ * * [Hummingbird](https://hummingbird.me)
+ */
+enum class ListTypes (val value: String) {
+    MYANIMELIST("mal")
+}

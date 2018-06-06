@@ -1,148 +1,71 @@
 stages:
-  - mirror
   - test
-  - build
+  - stats
   - release
-  - docs
-  - finalize
-
-variables:
-  GITLAB_ACCESS_TOKEN: "$GITLAB_ACCESS_TOKEN"
-  GITHUB_ACCESS_TOKEN: "$GITHUB_ACCESS_TOKEN"
-
-github_mirror:
-  stage: mirror
-  tags:
-    - linux-buildserver
-  script:
-    - git checkout master
-    - git pull
-    - git push git@github.com:namboy94/themes.moe-dl.git master -f
-    - git checkout develop
-    - git pull
-    - git push git@github.com:namboy94/themes.moe-dl.git develop -f
-
-unittest:
-  stage: test
-  tags:
-    - linux-buildserver
-  script:
-    - gradle test jacocoTestReport
-    - rsync -av --delete-after themes-moe-dl-lib/build/reports/coverage/
-      /var/www/coverage.namibsun.net/public_html/themes-moe-dl-lib
 
 lint:
   stage: test
   tags:
-    - linux-buildserver
+    - openjdk-8
+    - python3
   script:
-    - gradle ktlint
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gradle-ktlint
 
-build_all:
-  stage: build
-  only:
-    - master
-    - /^release-.*$/
+unittest:
+  stage: test
   tags:
-    - linux-buildserver
+    - openjdk-8
+    - python3
   script:
-    - mkdir -p artifacts
-    - gradle build
-    - mv themes-moe-dl-lib/build/libs/themes-moe-dl-lib-$(gradle version -q).jar artifacts/
-    - mv themes-moe-dl-cli/build/libs/themes-moe-dl-cli-$(gradle version -q).jar artifacts/
-  artifacts:
-     paths:
-      - artifacts/
-
-upload_gitlab_release:
-  stage: release
-  only:
-    - master
-  tags:
-    - linux-buildserver
-  script:
-    - git clone https://gitlab.namibsun.net/namboy94/gitlab-release-uploader.git
-    - git clone https://gitlab.namibsun.net/namboy94/changelog-reader.git
-    - python changelog-reader/changelog-reader.py -c CHANGELOG -d  current_changelog
-    - python gitlab-release-uploader/gitlab-release-uploader.py namboy94 themes.moe-dl $GITLAB_ACCESS_TOKEN
-      $(gradle version -q) current_changelog artifacts -b master -u https://gitlab.namibsun.net
-
-upload_github_release:
-  stage: release
-  only:
-    - master
-  tags:
-    - linux-buildserver
-  script:
-    - git clone https://gitlab.namibsun.net/namboy94/github-release-uploader.git
-    - git clone https://gitlab.namibsun.net/namboy94/changelog-reader.git
-    - python changelog-reader/changelog-reader.py -c CHANGELOG -d current_changelog
-    - python github-release-uploader/github-release-uploader.py namboy94 themes.moe-dl $GITHUB_ACCESS_TOKEN
-      $(gradle version -q) current_changelog artifacts -b master
-
-# This is currently not working as intended due to some gradle build error with dokka
-#documentation_gen:
-#  stage: docs
-#  tags:
-#    - linux-buildserver
-#  only:
-#      - master
-#      - develop
-#  script:
-#    - gradle dokka
-#    - gradle dokkaJavadoc
-#    - rsync -av --delete-after themes-moe-dl-lib/build/javadoc/themes-moe-dl-lib/
-#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-html
-#    - rsync -av --delete-after themes-moe-dl-lib/build/dokkaJavadoc/
-#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-lib-javadoc
-#    - rsync -av --delete-after themes-moe-dl-cli/build/javadoc/themes-moe-dl-cli/
-#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-html
-#    - rsync -av --delete-after themes-moe-dl-cli/build/dokkaJavadoc/
-#      /var/www/docs.namibsun.net/public_html/themes-moe-dl-cli-javadoc
-
-documentation_gen_with_dokka_fatjar:
-  stage: docs
-  tags:
-    - linux-buildserver
-  script:
-    - wget https://github.com/Kotlin/dokka/releases/download/0.9.10/dokka-fatjar.jar
-    - java -jar dokka-fatjar.jar themes-moe-dl-lib/src/main/kotlin -output dokka-lib -format html -module
-      themes-moe-dl-lib -include themes-moe-dl-lib/Module.md
-    - java -jar dokka-fatjar.jar themes-moe-dl-cli/src/main/kotlin -output dokka-cli -format html -module
-      themes-moe-dl-cli
-    - rsync -av --delete-after dokka-lib/ /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib
-    - rsync -av --delete-after dokka-cli/ /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli
-    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli/themes-moe-dl-cli/*
-      /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-cli/
-    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/themes-moe-dl-lib/*
-      /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/
-    - mv /var/www/docs.namibsun.net/public_html/html_docs/themes-moe-dl-lib/style.css
-      /var/www/docs.namibsun.net/public_html/html_docs/style.css
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gradle-jacoco anitheme-dl-cli
+    - gradle-jacoco anitheme-dl-lib
 
 gitstats:
-  stage: docs
+  stage: stats
   tags:
-    - linux-buildserver
+    - python3
+    - gitstats
+    - progstats
+  script:
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gitstats-gen
+
+docgen:
+  stage: stats
+  tags:
+    - openjdk-8
+    - python3
+  script:
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gradle-dokka anitheme-dl-cli
+    - gradle-dokka anitheme-dl-lib
+
+build_jar:
+  stage: test
   only:
     - master
     - develop
-  script:
-    - gitstats . gitstats
-    - rsync -av gitstats/ /var/www/gitstats.namibsun.net/public_html/gitstats/themes-moe-dl --delete-before
-    - git_stats generate
-    - rsync -av git_stats/ /var/www/gitstats.namibsun.net/public_html/git_stats/themes-moe-dl --delete-before
-
-update_html_pages:
-  stage: finalize
-  when: always
   tags:
-    - linux-buildserver
+    - openjdk-8
+    - python3
   script:
-    - git clone https://gitlab.namibsun.net/namboy94/html-index-generator.git
-    - cd html-index-generator
-    - python html-index-generator.py /var/www/coverage.namibsun.net/public_html
-      /var/www/coverage.namibsun.net/public_html/index.html
-    - python html-index-generator.py /var/www/docs.namibsun.net/public_html
-      /var/www/docs.namibsun.net/public_html/index.html
-    - python html-index-generator.py /var/www/gitstats.namibsun.net/public_html
-      /var/www/gitstats.namibsun.net/public_html/index.html
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - gradle-build-jar anitheme-dl-lib
+    - gradle-build-jar anitheme-dl-cli
+  artifacts:
+    expire_in: 1 week
+    paths:
+      - artifacts/
+
+release_upload:
+  stage: release
+  only:
+    - master
+  tags:
+    - python3
+  script:
+    - python3 -m venv virtual && source virtual/bin/activate && pip install ci-scripts
+    - github-release-upload $(cat version) "$(changelog-reader)"
+    - gitlab-release-upload $(cat version) "$(changelog-reader)"

@@ -17,6 +17,15 @@ You should have received a copy of the GNU General Public License
 along with anitheme-dl.  If not, see <http://www.gnu.org/licenses/>.
 */
 
-rootProject.name = 'themes-moe-dl'
-include ':anitheme-dl-lib'
-include ':anitheme-dl-cli'
+package net.namibsun.anitheme.dl.lib.parsing
+
+/**
+ * An enum that defines the four seasons in which anime series typically air.
+ *
+ * This is used when parsing for the seasonal theme lists
+ *
+ * @param value The value used by the parser
+ */
+enum class Seasons (val value: String) {
+    SUMMER("Summer"), WINTER("Winter"), FALL("Fall"), SPRING("Spring")
+}
